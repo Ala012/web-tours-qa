@@ -157,6 +157,10 @@ Xray génère automatiquement :
 
 Exporter le rapport en PDF/CSV et l'archiver dans le dépôt ou dans Jira.
 
+Un export local des statuts est disponible :
+`jira-xray/WebTours_Resultats_Execution.csv` (36 lignes, 20 PASS / 16 FAIL),
+régénérable avec `python scripts/export_results.py`.
+
 ### 9.1 JQL utiles
 
 ```jql

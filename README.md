@@ -44,6 +44,7 @@ Mini-Projet/
 │  ├─ WebTours_Xray_Import.csv   # import des 36 tests dans Xray
 │  ├─ WebTours_UserStories.csv   # import des user stories dans Jira
 │  ├─ WebTours_Bugs.csv          # import des anomalies dans Jira
+│  ├─ WebTours_Resultats_Execution.csv  # statuts PASS/FAIL locaux
 │  └─ README_Import_Xray.md
 ├─ automation/
 │  ├─ requirements.txt
@@ -58,7 +59,8 @@ Mini-Projet/
 │  ├─ generate_test_cases.py     # régénère les fiches + CSV
 │  ├─ start_webtours.bat
 │  ├─ stop_webtours.bat
-│  └─ capture_evidence.py        # captures d'écran des bugs
+│  ├─ capture_evidence.py        # captures d'écran des bugs
+│  └─ export_results.py          # rapport d'exécution CSV
 └─ ci/
    ├─ Jenkinsfile
    └─ README_Jenkins.md
