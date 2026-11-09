@@ -1,7 +1,7 @@
 # Import Jira / Xray – WebTours QA
 
 > **État actuel : l'import a déjà été réalisé par API** dans le projet
-> `WTQA` – WEB_TOURS QA (9 tests réels, 15 bugs, 6 stories, Test Plan `WTQA-31`,
+> `WTQA` – WEB_TOURS QA (14 tests : 9 ciblés + 5 non-régression, 15 bugs, 6 stories, Test Plan `WTQA-31`,
 > Test Execution `WTQA-32`). Voir `RESULTATS_IMPORT.md` et
 > `README_API_Automatisation.md`.
 > Ce document décrit la procédure **manuelle de repli**, utile pour rejouer
@@ -12,7 +12,7 @@ Ce dossier contient les fichiers prêts à importer dans Jira et Xray.
 | Fichier | Contenu | Import |
 |---|---|---|
 | `WebTours_UserStories.csv` | 6 user stories | Jira → Import issues from CSV |
-| `WebTours_Xray_Import.csv` | 9 tests manuels réels | Xray → Test Case Importer |
+| `WebTours_Xray_Import.csv` | 14 tests manuels (9 FAIL + 5 PASS) | Xray → Test Case Importer |
 | `WebTours_Bugs.csv` | 15 anomalies | Jira → Import issues from CSV |
 
 ---
@@ -78,7 +78,7 @@ Résultat : `WT-US-01` à `WT-US-06`.
 | Folder | Test Repository Folder |
 
 6. Lancer l'import.
-7. Vérifier les 9 tests et l'arborescence.
+7. Vérifier les 14 tests et l'arborescence.
 
 ### 4.2 Méthode 2 – Import manuel
 

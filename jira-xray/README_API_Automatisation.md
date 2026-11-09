@@ -98,10 +98,10 @@ Une fois l'accès validé :
 
 1. créer le projet `WTQA` s'il n'existe pas ;
 2. créer les 6 user stories (`WT-US-01` à `WT-US-06`) ;
-3. créer les 9 tests Xray avec préconditions, étapes et résultat attendu ;
+3. créer les 14 tests Xray avec préconditions, étapes et résultat attendu ;
 4. créer le **Test Plan** « Plan de test WebTours – Sprint 1 » ;
 5. créer le **Test Execution** « Exécution manuelle – Sprint 1 » ;
-6. importer les statuts **9 FAILED** ;
+6. importer les statuts **5 PASSED / 9 FAILED** ;
 7. créer les 15 bugs et les lier aux tests concernés.
 
 ## 7. Sécurité

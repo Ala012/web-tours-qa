@@ -20,9 +20,9 @@ automation/
 │  ├─ flight_page.py        # recherche, sélection, paiement
 │  └─ itinerary_page.py     # affichage / suppression
 ├─ tests/
-│  ├─ test_rsva_authentication.py   # 3 tests
-│  ├─ test_rsvf_flight.py           # 3 tests
-│  └─ test_rsvi_itinerary.py        # 3 tests
+│  ├─ test_rsva_authentication.py   # 5 tests
+│  ├─ test_rsvf_flight.py           # 4 tests
+│  └─ test_rsvi_itinerary.py        # 4 tests
 ├─ utils/
 │  └─ webtours_api.py       # client requests pour les POST forgés
 └─ reports/
@@ -115,13 +115,15 @@ Le rapport est généré automatiquement dans `reports/report.html` grâce à
 Exécution du 09/11/2026 :
 
 ```text
-collected 9 items
-tests\test_rsva_authentication.py xxx
-tests\test_rsvf_flight.py xxx
-tests\test_rsvi_itinerary.py xxx
-==================== 9 xfailed in 72.30s (0:01:12) ====================
+collected 14 items
+tests\test_rsva_authentication.py ..xxx
+tests\test_rsvf_flight.py ..xxx
+tests\test_rsvi_itinerary.py .xxx
+=================== 5 passed, 9 xfailed in 67.85s (0:01:07) ===================
 ```
 
+- **5 PASS** : non-régression (login valide, mot de passe incorrect, recherche
+  aller simple et aller-retour, affichage de l'itinéraire).
 - **9 XFAIL** : scénarios réels en échec (sécurité et crash), voir
   `docs/04_Bugs_Detectes.md`.
 
@@ -131,8 +133,13 @@ tests\test_rsvi_itinerary.py xxx
 
 ## 6. Correspondance tests / anomalies
 
-| Test | Anomalie |
+| Test | Résultat |
 |---|---|
+| `test_rsva_ft_01_login_valide` | PASS |
+| `test_rsva_et_01_mot_de_passe_incorrect` | PASS |
+| `test_rsvf_ft_01_recherche_aller_simple` | PASS |
+| `test_rsvf_ft_02_recherche_aller_retour` | PASS |
+| `test_rsvi_ft_01_affichage_apres_reservation` | PASS |
 | `test_rsva_bt_03_username_caracteres_speciaux` | BUG-12 |
 | `test_rsva_pt_01_reservations_sans_login` | BUG-01 |
 | `test_rsva_pt_03_admin_sans_login` | BUG-03 |
@@ -145,7 +152,7 @@ tests\test_rsvi_itinerary.py xxx
 
 Les autres anomalies (BUG-06, BUG-07, BUG-08, BUG-11, BUG-13, BUG-14, BUG-15)
 restent documentées dans `docs/04_Bugs_Detectes.md` mais ne font pas partie de
-la campagne réduite.
+la campagne.
 
 ## 7. Données et isolation
 

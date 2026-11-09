@@ -1,4 +1,21 @@
 ﻿"Issue Type","Summary","Description","Test Type","Precondition","Steps","Expected Result","Priority","Labels","Folder"
+"Test","RSVA-FT-01 – Connexion avec des identifiants valides","Connexion avec des identifiants valides
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_ft_01_login_valide
+Statut constaté : Passé","Manual","Le serveur WebTours est démarré sur http://127.0.0.1:1080.
+Le compte de démonstration jojo / bean existe.","1. Ouvrir http://127.0.0.1:1080/WebTours/index.htm.
+2. Saisir jojo dans le champ Username et bean dans le champ Password.
+3. Cliquer sur le bouton Login.","1. La page Web Tours s'affiche avec le cadre de navigation et la page d'accueil.
+2. Les deux champs sont renseignés.
+3. Le message « Welcome, jojo » s'affiche et le menu Flights / Itinerary / Home / SignOff apparaît.","High","WebTours RSVA FT RSVA-FT-01 MANUAL-MANUAL","/WebTours/RSVA - Authentification/FT - Functional Testing"
+"Test","RSVA-ET-01 – Connexion avec un mot de passe incorrect","Connexion avec un mot de passe incorrect
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_et_01_mot_de_passe_incorrect
+Statut constaté : Passé","Manual","Le compte jojo / bean existe.","1. Saisir jojo et un mot de passe erroné.
+2. Cliquer sur Login.","1. Les champs sont renseignés.
+2. La page « Web Tours Error - Incorrect Password » s'affiche et l'utilisateur n'est pas connecté.","High","WebTours RSVA ET RSVA-ET-01 MANUAL-MANUAL","/WebTours/RSVA - Authentification/ET - Error Testing"
 "Test","RSVA-BT-03 – Connexion avec des caractères spéciaux dans le nom d'utilisateur","Connexion avec des caractères spéciaux dans le nom d'utilisateur
 
 User Story : WT-US-01 / WT-US-02
@@ -20,6 +37,23 @@ Test automatisé : test_rsva_authentication.py::test_rsva_pt_03_admin_sans_login
 Statut constaté : Échoué – BUG-03","Manual","Aucune session administrateur n'est ouverte.","1. Ouvrir directement l'URL admin.pl.
 2. Vérifier les options serveur affichées.","1. L'accès doit être refusé (401/403) ou rediriger vers le login.
 2. Aucune option de configuration ne doit être modifiable sans authentification.","Critical","WebTours RSVA PT RSVA-PT-03 MANUAL-MANUAL","/WebTours/RSVA - Authentification/PT - Permission Testing"
+"Test","RSVF-FT-01 – Recherche d'un vol aller simple Denver → Paris","Recherche d'un vol aller simple Denver → Paris
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_ft_01_recherche_aller_simple
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.
+La date de départ est fixée à demain.","1. Cliquer sur Flights dans le menu.
+2. Sélectionner Denver, Paris, la date de demain et 1 passager.
+3. Cliquer sur le bouton Next (findFlights).","1. Le formulaire Find Flight s'affiche.
+2. Les valeurs sont sélectionnées.
+3. Quatre vols (040, 041, 042, 043) sont proposés avec les horaires et les prix.","High","WebTours RSVF FT RSVF-FT-01 MANUAL-MANUAL","/WebTours/RSVF - Flight/FT - Functional Testing"
+"Test","RSVF-FT-02 – Recherche d'un vol aller-retour","Recherche d'un vol aller-retour
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_ft_02_recherche_aller_retour
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.","1. Ouvrir le formulaire Find Flight.
+2. Cocher Roundtrip ticket et lancer la recherche.","1. Le formulaire s'affiche.
+2. Les vols aller et les vols retour sont affichés.","High","WebTours RSVF FT RSVF-FT-02 MANUAL-MANUAL","/WebTours/RSVF - Flight/FT - Functional Testing"
 "Test","RSVF-ET-01 – Recherche avec une date de départ vide","Recherche avec une date de départ vide
 
 User Story : WT-US-03
@@ -45,6 +79,14 @@ Test automatisé : test_rsvf_flight.py::test_rsvf_pt_02_flightid_falsifie
 Statut constaté : Échoué – BUG-10","Manual","L'utilisateur est connecté.","1. Soumettre directement une réservation avec un numéro de vol inexistant (999).
 2. Finaliser le paiement.","1. Le serveur doit refuser un vol qui n'existe pas.
 2. Aucune facture ne doit être générée pour un vol inexistant.","Critical","WebTours RSVF PT RSVF-PT-02 MANUAL-MANUAL","/WebTours/RSVF - Flight/PT - Permission Testing"
+"Test","RSVI-FT-01 – Affichage de l'itinéraire après une réservation","Affichage de l'itinéraire après une réservation
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_ft_01_affichage_apres_reservation
+Statut constaté : Passé","Manual","L'utilisateur est connecté.
+Au moins un vol a été réservé.","1. Cliquer sur Itinerary dans le menu.
+2. Vérifier les informations du vol.","1. La page Itinerary s'affiche.
+2. Le vol, la date, le prix et les 4 derniers chiffres de la carte sont affichés.","High","WebTours RSVI FT RSVI-FT-01 MANUAL-MANUAL","/WebTours/RSVI - Itinerary/FT - Functional Testing"
 "Test","RSVI-PT-01 – Accès à l'itinéraire d'un autre utilisateur (cookie forgé)","Accès à l'itinéraire d'un autre utilisateur (cookie forgé)
 
 User Story : WT-US-04

@@ -648,7 +648,7 @@ TESTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Campagne réduite : 3 tests réels par module (9 au total).
+# Campagne : 9 tests réels en échec + 5 tests de non-régression (14 au total).
 # Les scénarios conservés sont ceux qui échouent réellement ou font planter
 # l'application (sécurité + crash). Les autres définitions restent ci-dessus
 # comme backlog documenté mais ne sont plus générées ni importées.
@@ -666,6 +666,12 @@ CAMPAIGN_IDS = [
     "RSVI-PT-01",
     "RSVI-PT-02",
     "RSVI-PT-03",
+    # Non-régression (doivent PASSER) : 5 tests
+    "RSVA-FT-01",
+    "RSVA-ET-01",
+    "RSVF-FT-01",
+    "RSVF-FT-02",
+    "RSVI-FT-01",
 ]
 TESTS = [test for test in TESTS if test["id"] in CAMPAIGN_IDS]
 

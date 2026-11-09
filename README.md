@@ -6,13 +6,13 @@ Projet de test manuel et automatisé d'une application web de réservation de vo
 Ce dépôt contient :
 
 - le **plan de test** et les **user stories** ;
-- **9 cas de test manuels** (3 par module), choisis parmi les scénarios qui
-  échouent réellement ou font planter l'application :
-  - `RSVA` – Authentification
-  - `RSVF` – Vols
-  - `RSVI` – Itinéraire
-  - types utilisés : `ET` – Error Testing, `BT` – Boundary Testing,
-    `PT` – Permission Testing ;
+- **14 cas de test manuels** :
+  - **9 tests ciblés** (3 par module) qui échouent réellement ou font planter
+    l'application ;
+  - **5 tests de non-régression** qui passent ;
+  - modules : `RSVA` – Authentification, `RSVF` – Vols, `RSVI` – Itinéraire ;
+  - types utilisés : `FT` – Functional Testing, `ET` – Error Testing,
+    `BT` – Boundary Testing, `PT` – Permission Testing ;
 - les fichiers d'**import Jira / Xray** (tests, user stories, bugs) ;
 - une suite de **tests automatisés Selenium + pytest** ;
 - un **Jenkinsfile** pour lancer la suite en CI ;
@@ -37,15 +37,19 @@ Mini-Projet/
 │  └─ evidence/                  # captures des anomalies
 ├─ tests-manuels/
 │  ├─ RSVA-Authentication/
+│  │  ├─ FT - Functional Testing/RSVA-FT-01.md
+│  │  ├─ ET - Error Testing/RSVA-ET-01.md
 │  │  ├─ BT - Boundary Testing/RSVA-BT-03.md
 │  │  └─ PT - Permission Testing/RSVA-PT-01.md, RSVA-PT-03.md
 │  ├─ RSVF-Flight/
+│  │  ├─ FT - Functional Testing/RSVF-FT-01.md, RSVF-FT-02.md
 │  │  ├─ ET - Error Testing/RSVF-ET-01.md
 │  │  └─ PT - Permission Testing/RSVF-PT-01.md, RSVF-PT-02.md
 │  └─ RSVI-Itinerary/
+│     ├─ FT - Functional Testing/RSVI-FT-01.md
 │     └─ PT - Permission Testing/RSVI-PT-01.md, RSVI-PT-02.md, RSVI-PT-03.md
 ├─ jira-xray/
-│  ├─ WebTours_Xray_Import.csv   # import des 9 tests dans Xray
+│  ├─ WebTours_Xray_Import.csv   # import des 14 tests dans Xray
 │  ├─ WebTours_UserStories.csv   # import des user stories dans Jira
 │  ├─ WebTours_Bugs.csv          # import des anomalies dans Jira
 │  ├─ WebTours_Resultats_Execution.csv  # statuts PASS/FAIL locaux
@@ -153,9 +157,9 @@ Le projet **`WTQA` – WEB_TOURS QA** a été créé et alimenté par API :
 |---|---|---|
 | User stories | 6 | `WTQA-1` à `WTQA-6` |
 | Bugs | 15 | `WTQA-7` à `WTQA-21` |
-| Tests manuels | 9 | `WTQA-22` à `WTQA-30` |
-| Test Plan | 1 | `WTQA-31` (9 tests) |
-| Test Execution | 1 | `WTQA-32` (9 FAILED) |
+| Tests manuels | 14 | `WTQA-22` à `WTQA-37` |
+| Test Plan | 1 | `WTQA-31` (14 tests) |
+| Test Execution | 1 | `WTQA-32` (5 PASSED / 9 FAILED) |
 
 Détails et vérification : `jira-xray/RESULTATS_IMPORT.md`.
 
@@ -169,7 +173,7 @@ python scripts\jira_verify.py
 2. Importer `jira-xray/WebTours_UserStories.csv` (issues de type **Story**).
 3. Installer **Xray** sur le projet.
 4. Importer `jira-xray/WebTours_Xray_Import.csv` via **Xray → Test Case Importer**.
-5. Créer le **Test Plan** « Plan de test WebTours – Sprint 1 » et y ajouter les 9 tests.
+5. Créer le **Test Plan** « Plan de test WebTours – Sprint 1 » et y ajouter les 14 tests.
 6. Créer le **Test Execution** « Exécution manuelle – Sprint 1 ».
 7. Exécuter les tests, passer les statuts à **PASS / FAIL / TODO**.
 8. Créer les anomalies à partir de `jira-xray/WebTours_Bugs.csv`.
@@ -193,9 +197,9 @@ ils échouent volontairement pour prouver l'anomalie sans casser la CI.
 
 ```text
 automation/tests/
-├─ test_rsva_authentication.py   # 3 tests
-├─ test_rsvf_flight.py           # 3 tests
-├─ test_rsvi_itinerary.py        # 3 tests
+├─ test_rsva_authentication.py   # 5 tests
+├─ test_rsvf_flight.py           # 4 tests
+├─ test_rsvi_itinerary.py        # 4 tests
 └─ conftest.py
 ```
 

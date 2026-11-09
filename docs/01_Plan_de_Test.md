@@ -42,19 +42,25 @@
 
 ## 4. Stratégie de test
 
-Trois types de tests sont utilisés dans la campagne réduite :
+Quatre types de tests sont utilisés :
 
 | Code | Type | Objectif |
 |---|---|---|
+| **FT** | Functional Testing | Vérifier les parcours nominaux (connexion, recherche, itinéraire). |
 | **ET** | Error Testing | Vérifier la gestion des erreurs et des saisies invalides. |
 | **BT** | Boundary Testing | Vérifier les valeurs limites (longueur, nombre de passagers, dernier vol). |
 | **PT** | Permission Testing | Vérifier les contrôles d'accès, l'authentification et l'intégrité des données. |
 
-La campagne est volontairement réduite à **3 tests par module**, soit
-**9 tests au total**. Chaque test est un scénario **réel qui échoue** ou qui
-fait planter l'application (page blanche, erreur serveur, faille d'accès).
-Les parcours nominaux sont couverts par l'automatisation de non-régression,
-mais ne font pas partie de cette campagne manuelle ciblée.
+La campagne contient **14 tests** :
+
+- **9 tests ciblés** (3 par module) : scénarios **réels qui échouent** ou qui
+  font planter l'application (page blanche, erreur serveur, faille d'accès) ;
+- **5 tests de non-régression** qui doivent **passer** (connexion valide,
+  mot de passe incorrect, recherche aller simple et aller-retour, affichage de
+  l'itinéraire après réservation).
+
+Cela donne une exécution **5 PASSED / 9 FAILED**, avec à la fois la preuve des
+anomalies et la confirmation que les parcours principaux fonctionnent.
 
 ### 4.1 Priorisation
 
@@ -102,7 +108,7 @@ mais ne font pas partie de cette campagne manuelle ciblée.
 
 ## 8. Critères de sortie
 
-- Les 9 tests manuels ont été exécutés et tracés dans Xray.
+- Les 14 tests manuels ont été exécutés et tracés dans Xray.
 - Tous les tests Critical/High ont un statut (PASS/FAIL) et une anomalie associée
   en cas d'échec.
 - La suite automatisée s'exécute sans erreur d'infrastructure.
@@ -113,7 +119,7 @@ mais ne font pas partie de cette campagne manuelle ciblée.
 
 - Plan de test (ce document).
 - User stories Jira.
-- 9 fiches de test manuelles.
+- 14 fiches de test manuelles.
 - Fichiers d'import Xray.
 - Rapport d'exécution Xray.
 - Rapport de bugs avec preuves.
@@ -136,11 +142,11 @@ mais ne font pas partie de cette campagne manuelle ciblée.
 
 | User Story | Tests |
 |---|---|
-| WT-US-01 – Authentification | RSVA-BT-03, RSVA-PT-01, RSVA-PT-03 |
-| WT-US-02 – Inscription | RSVA-BT-03, RSVA-PT-01, RSVA-PT-03 |
-| WT-US-03 – Recherche et réservation | RSVF-ET-01, RSVF-PT-01, RSVF-PT-02 |
-| WT-US-04 – Itinéraire | RSVI-PT-01, RSVI-PT-02, RSVI-PT-03 |
-| WT-US-05 – Déconnexion | – (hors campagne réduite) |
+| WT-US-01 – Authentification | RSVA-FT-01, RSVA-ET-01, RSVA-BT-03, RSVA-PT-01, RSVA-PT-03 |
+| WT-US-02 – Inscription | RSVA-FT-01, RSVA-ET-01, RSVA-BT-03 |
+| WT-US-03 – Recherche et réservation | RSVF-FT-01, RSVF-FT-02, RSVF-ET-01, RSVF-PT-01, RSVF-PT-02 |
+| WT-US-04 – Itinéraire | RSVI-FT-01, RSVI-PT-01, RSVI-PT-02, RSVI-PT-03 |
+| WT-US-05 – Déconnexion | – (hors campagne) |
 | WT-US-06 – Sécurité et permissions | RSVA-PT-01, RSVA-PT-03, RSVF-PT-01, RSVF-PT-02, RSVI-PT-01, RSVI-PT-02, RSVI-PT-03 |
 
 ## 12. Calendrier indicatif
@@ -148,7 +154,7 @@ mais ne font pas partie de cette campagne manuelle ciblée.
 | Phase | Durée | Activités |
 |---|---|---|
 | Préparation | 1 jour | Installation, plan de test, user stories, jeu de données |
-| Conception | 1 jour | 9 cas de test réels, import Xray, revue |
+| Conception | 1 jour | 14 cas de test (9 ciblés + 5 non-régression), import Xray, revue |
 | Exécution manuelle | 2 jours | Exécution, captures, anomalies |
 | Automatisation | 2 jours | Page Objects, tests, exécution, rapport |
 | CI / Git | 0,5 jour | Dépôt, Jenkinsfile, exécution Jenkins |
@@ -159,6 +165,7 @@ mais ne font pas partie de cette campagne manuelle ciblée.
 À l'issue de la campagne :
 
 - **9 tests FAIL** couvrant **8 anomalies distinctes**, dont **5 critiques** ;
-- une suite automatisée de régression couvrant les 9 scénarios réels
-  (sécurité et crash) ;
+- **5 tests PASS** prouvant que les parcours principaux fonctionnent ;
+- une suite automatisée de 14 tests (9 `xfail` + 5 PASS) couvrant la sécurité,
+  les crashs et la non-régression ;
 - une exécution Jenkins verte (les bugs connus sont marqués `xfail`).

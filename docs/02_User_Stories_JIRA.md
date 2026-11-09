@@ -33,7 +33,7 @@
       authentification.
 
 **Priorité :** High
-**Tests :** RSVA-BT-03, RSVA-PT-01, RSVA-PT-03
+**Tests :** RSVA-FT-01, RSVA-ET-01, RSVA-BT-03, RSVA-PT-01, RSVA-PT-03
 
 ---
 
@@ -53,7 +53,7 @@
 - [ ] Une politique minimale de mot de passe est appliquée.
 
 **Priorité :** High
-**Tests :** RSVA-BT-03, RSVA-PT-01, RSVA-PT-03
+**Tests :** RSVA-FT-01, RSVA-ET-01, RSVA-BT-03
 
 ---
 
@@ -77,7 +77,7 @@
 - [ ] L'achat direct sans sélection est refusé.
 
 **Priorité :** High
-**Tests :** RSVF-ET-01, RSVF-PT-01, RSVF-PT-02
+**Tests :** RSVF-FT-01, RSVF-FT-02, RSVF-ET-01, RSVF-PT-01, RSVF-PT-02
 
 ---
 
@@ -98,7 +98,7 @@
 - [ ] L'itinéraire n'est pas accessible sans session.
 
 **Priorité :** High
-**Tests :** RSVI-PT-01, RSVI-PT-02, RSVI-PT-03
+**Tests :** RSVI-FT-01, RSVI-PT-01, RSVI-PT-02, RSVI-PT-03
 
 ---
 
@@ -115,7 +115,7 @@
 - [ ] Les pages protégées redeviennent inaccessibles après déconnexion.
 
 **Priorité :** Medium
-**Tests :** – (hors campagne réduite)
+**Tests :** – (hors campagne)
 
 ---
 

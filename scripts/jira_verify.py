@@ -108,10 +108,10 @@ def main() -> int:
     for name, count in sorted(statuses.items(), key=lambda item: str(item[0])):
         print(f"  - {name:<12} : {count}")
 
-    expected = {"FAILED": 9}
+    expected = {"PASSED": 5, "FAILED": 9}
     actual = {str(name).upper(): count for name, count in statuses.items()}
     if actual == expected:
-        print("[OK] Statuts conformes : 9 FAILED (campagne réduite).")
+        print("[OK] Statuts conformes : 5 PASSED / 9 FAILED.")
     else:
         print(f"[ATTENTION] Statuts inattendus : {actual}")
 
@@ -153,7 +153,7 @@ def main() -> int:
         else:
             print("[ATTENTION] Verification du Test Plan impossible.")
 
-    # Verification des etapes des 9 tests
+    # Verification des etapes des 14 tests
     test_query = """
     query AllTests($jql: String!) {
       getTests(jql: $jql, limit: 100) {

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Tests du module RSVF – Vols (campagne réduite : 3 tests réels)."""
+"""Tests du module RSVF – Vols.
+
+Campagne : 9 tests réels en échec (xfail) + 5 tests de non-régression (PASS).
+"""
 from __future__ import annotations
 
 import re
@@ -19,7 +22,29 @@ def _open_flights(page) -> FlightPage:
 
 
 # --------------------------------------------------------------------------
-# ET – Error Testing (crash)
+# FT – Functional Testing (PASS)
+# --------------------------------------------------------------------------
+@pytest.mark.ft
+def test_rsvf_ft_01_recherche_aller_simple(logged_in):
+    flight = _open_flights(logged_in)
+    flight.search("Denver", "Paris", tomorrow(), passengers=1)
+    assert len(flight.outbound_values()) == 4
+    text = flight.text()
+    assert "Denver" in text and "Paris" in text
+
+
+@pytest.mark.ft
+def test_rsvf_ft_02_recherche_aller_retour(logged_in):
+    flight = _open_flights(logged_in)
+    flight.search(
+        "Denver", "Paris", tomorrow(), return_date=tomorrow(), roundtrip=True
+    )
+    assert len(flight.outbound_values()) == 4
+    assert len(flight.return_values()) == 4
+
+
+# --------------------------------------------------------------------------
+# ET – Error Testing (FAIL – BUG-05)
 # --------------------------------------------------------------------------
 @pytest.mark.et
 @pytest.mark.xfail(
@@ -34,7 +59,7 @@ def test_rsvf_et_01_date_vide(logged_in):
 
 
 # --------------------------------------------------------------------------
-# PT – Permission Testing (sécurité)
+# PT – Permission Testing (FAIL – BUG-09, BUG-10)
 # --------------------------------------------------------------------------
 @pytest.mark.pt
 @pytest.mark.xfail(

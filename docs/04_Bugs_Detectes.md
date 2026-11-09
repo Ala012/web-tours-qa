@@ -27,19 +27,21 @@
 | BUG-03 | RSVA | Page admin accessible sans authentification | Critical | RSVA-PT-03 |
 | BUG-04 | RSVI | IDOR : itinéraire d'un autre utilisateur via cookie forgé | Critical | RSVI-PT-01 |
 | BUG-05 | RSVF | Date vide/invalide : page blanche et erreur Perl | High | RSVF-ET-01 |
-| BUG-06 | RSVF | Date passée acceptée | High | – (hors campagne réduite) |
-| BUG-07 | RSVF | Départ = arrivée accepté, vols à 0 $ | High | – (hors campagne réduite) |
-| BUG-08 | RSVF | Nombre de passagers non validé (0, négatif, 999) | High | – (hors campagne réduite) |
+| BUG-06 | RSVF | Date passée acceptée | High | – (hors campagne) |
+| BUG-07 | RSVF | Départ = arrivée accepté, vols à 0 $ | High | – (hors campagne) |
+| BUG-08 | RSVF | Nombre de passagers non validé (0, négatif, 999) | High | – (hors campagne) |
 | BUG-09 | RSVF | Prix manipulable dans le POST | Critical | RSVF-PT-01 |
 | BUG-10 | RSVF | flightID falsifié / achat direct | Critical | RSVF-PT-02 |
-| BUG-11 | RSVA | Politique de mot de passe absente | Medium | – (hors campagne réduite) |
+| BUG-11 | RSVA | Politique de mot de passe absente | Medium | – (hors campagne) |
 | BUG-12 | RSVA | Normalisation silencieuse du username | High | RSVA-BT-03 |
 | BUG-13 | RSVA | Mots de passe stockés en clair | Critical | – (audit) |
-| BUG-14 | RSVF | Aucune validation de la carte bancaire | High | – (hors campagne réduite) |
+| BUG-14 | RSVF | Aucune validation de la carte bancaire | High | – (hors campagne) |
 | BUG-15 | Tous | Absence de jetons anti-CSRF | Medium | – (audit) |
 
-> **Campagne réduite :** seuls les 9 tests listés ci-dessus sont rejoués dans
-> Xray. Les autres scénarios restent documentés comme backlog de régression.
+> **Campagne :** les 9 tests listés ci-dessus sont rejoués dans Xray et
+> échouent (FAILED). Ils sont complétés par 5 tests de non-régression qui
+> passent (PASSED) : `RSVA-FT-01`, `RSVA-ET-01`, `RSVF-FT-01`, `RSVF-FT-02`,
+> `RSVI-FT-01`. Les autres scénarios restent documentés comme backlog.
 
 ---
 
@@ -201,8 +203,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** – (hors campagne réduite)
-- **Automatisé :** – (hors campagne réduite)
+- **Test :** – (hors campagne)
+- **Automatisé :** – (hors campagne)
 
 **Étapes :**
 
@@ -223,8 +225,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** – (hors campagne réduite)
-- **Automatisé :** – (hors campagne réduite)
+- **Test :** – (hors campagne)
+- **Automatisé :** – (hors campagne)
 
 **Étapes :**
 
@@ -246,8 +248,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Tests :** – (hors campagne réduite)
-- **Automatisé :** – (hors campagne réduite)
+- **Tests :** – (hors campagne)
+- **Automatisé :** – (hors campagne)
 
 **Étapes :**
 
@@ -328,8 +330,8 @@ panier/session et l'ordre des étapes.
 - **Module :** RSVA
 - **Sévérité :** Medium
 - **Priorité :** Medium
-- **Test :** – (hors campagne réduite)
-- **Automatisé :** – (hors campagne réduite)
+- **Test :** – (hors campagne)
+- **Automatisé :** – (hors campagne)
 
 **Étapes :**
 
@@ -403,7 +405,7 @@ mot de passe en clair.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** – (hors campagne réduite)
+- **Test :** – (hors campagne)
 - **Automatisé :** scénario API
 
 **Étapes :**

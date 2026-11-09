@@ -3,7 +3,7 @@
 
 Phases :
     meta       : 6 user stories + 15 bugs (API REST Jira)
-    tests      : 9 tests manuels avec etapes (API GraphQL Xray)
+    tests      : 14 tests manuels avec etapes (API GraphQL Xray)
     execution  : Test Plan, Test Execution, resultats 9 FAIL, liens
 
 Exemples :
@@ -336,6 +336,34 @@ class Xray:
         execution = data["createTestExecution"]["testExecution"]
         return {"key": execution["jira"]["key"], "id": execution["issueId"]}
 
+    def add_tests_to_plan(self, plan_id: str, test_ids: list[str]) -> dict:
+        query = """
+        mutation AddTestsToPlan($id: String!, $tests: [String]!) {
+          addTestsToTestPlan(issueId: $id, testIssueIds: $tests) {
+            addedTests
+            warning
+          }
+        }
+        """
+        return self.graphql(
+            query, {"id": plan_id, "tests": test_ids}
+        )["addTestsToTestPlan"]
+
+    def add_tests_to_execution(
+        self, execution_id: str, test_ids: list[str]
+    ) -> dict:
+        query = """
+        mutation AddTestsToExecution($id: String!, $tests: [String]!) {
+          addTestsToTestExecution(issueId: $id, testIssueIds: $tests) {
+            addedTests
+            warning
+          }
+        }
+        """
+        return self.graphql(
+            query, {"id": execution_id, "tests": test_ids}
+        )["addTestsToTestExecution"]
+
     def add_executions_to_plan(
         self, plan_id: str, execution_ids: list[str]
     ) -> dict:
@@ -523,13 +551,32 @@ def create_execution_phase(
             {
                 "project": {"key": jira.project},
                 "summary": EXEC_SUMMARY,
-                "description": "Execution des 9 tests manuels WebTours (Sprint 1).",
+                "description": "Execution des 14 tests manuels WebTours (Sprint 1).",
             },
         )
         print(f"[OK] Test Execution {execution['key']} : {EXEC_SUMMARY}")
 
     if dry_run or not execution or not plan:
         return
+
+    # Ajout des tests au plan et a l'execution (utile quand la campagne grandit).
+    try:
+        plan_add = xray.add_tests_to_plan(plan["id"], test_ids)
+        print(
+            f"[OK] Tests ajoutes au plan {plan['key']} : "
+            f"{plan_add.get('addedTests', 0)}"
+        )
+    except RuntimeError as exc:
+        print(f"[INFO] Tests deja presents dans le plan {plan['key']} : {exc}")
+    execution_key = execution["key"]
+    try:
+        exec_add = xray.add_tests_to_execution(execution["id"], test_ids)
+        print(
+            f"[OK] Tests ajoutes a l'execution {execution_key} : "
+            f"{exec_add.get('addedTests', 0)}"
+        )
+    except RuntimeError as exc:
+        print(f"[INFO] Tests deja presents dans l'execution {execution_key} : {exc}")
 
     # Association de l'execution au plan (sinon le plan reste "non execute").
     linked = xray.add_executions_to_plan(plan["id"], [execution["id"]])

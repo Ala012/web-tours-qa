@@ -2,7 +2,7 @@
 
 ## 1. Objectif
 
-Organiser, exécuter et tracer les 9 tests manuels dans Jira/Xray, puis produire
+Organiser, exécuter et tracer les 14 tests manuels dans Jira/Xray, puis produire
 un rapport d'exécution et les anomalies associées.
 
 ## 2. Préparation du projet Jira
@@ -53,12 +53,16 @@ Résultat attendu : 6 stories `WT-US-01` à `WT-US-06`.
 ```text
 WebTours
 ├─ RSVA - Authentification
+│  ├─ FT - Functional Testing      (1 test)
+│  ├─ ET - Error Testing           (1 test)
 │  ├─ BT - Boundary Testing        (1 test)
 │  └─ PT - Permission Testing      (2 tests)
 ├─ RSVF - Flight
+│  ├─ FT - Functional Testing      (2 tests)
 │  ├─ ET - Error Testing           (1 test)
 │  └─ PT - Permission Testing      (2 tests)
 └─ RSVI - Itinerary
+   ├─ FT - Functional Testing      (1 test)
    └─ PT - Permission Testing      (3 tests)
 ```
 
@@ -67,17 +71,17 @@ WebTours
 
 ### 4.3 Vérification
 
-- 9 tickets de type **Test**.
+- 14 tickets de type **Test**.
 - Chaque test possède ses préconditions, étapes et résultats attendus.
 - Les labels contiennent `WebTours`, le module (`RSVA`/`RSVF`/`RSVI`), le type
-  (`ET`/`BT`/`PT`) et l'identifiant du test.
+  (`FT`/`ET`/`BT`/`PT`) et l'identifiant du test.
 
 ## 5. Création du Test Plan
 
 1. **Xray → Test Plans → Create**.
 2. Nom : **Plan de test WebTours – Sprint 1**.
 3. Description : campagne manuelle + automatique.
-4. Ajouter les 9 tests :
+4. Ajouter les 14 tests :
    - **Add Tests** → sélectionner le dossier `WebTours` ;
    - ou utiliser la recherche JQL : `project = WTQA AND issuetype = Test`.
 5. Enregistrer.
@@ -110,7 +114,7 @@ Pour chaque test :
 
 | Statut | Nombre | Commentaire |
 |---|---|---|
-| PASS | 0 | Aucun parcours nominal dans la campagne ciblée |
+| PASS | 5 | Non-régression : login, erreur de mot de passe, recherches, itinéraire |
 | FAIL | 9 | Scénarios réels en échec (sécurité et crash) |
 | TODO | 0 | Tous exécutés |
 | BLOCKED | 0 | Aucun |
@@ -124,14 +128,14 @@ L'exécution a été créée et alimentée par API dans le projet **`WTQA` – W
 |---|---|---|
 | User stories | 6 | `WTQA-1` à `WTQA-6` |
 | Bugs | 15 | `WTQA-7` à `WTQA-21` |
-| Tests manuels | 9 | `WTQA-22` à `WTQA-30` |
-| Test Plan | 1 | `WTQA-31` – 9 tests |
-| Test Execution | 1 | `WTQA-32` – 9 FAILED |
+| Tests manuels | 14 | `WTQA-22` à `WTQA-37` |
+| Test Plan | 1 | `WTQA-31` – 14 tests |
+| Test Execution | 1 | `WTQA-32` – 5 PASSED / 9 FAILED |
 
 - Environnement d'exécution : `Windows11-Chrome-WebTours-local`.
-- Les 9 statuts Xray sont **FAILED**.
-- Traçabilité : 9 liens **bug → test** et 12 liens **test → user story**.
-- Les 9 tests possèdent leurs étapes Xray (0 test sans étape).
+- Les 14 statuts Xray sont **5 PASSED** et **9 FAILED**.
+- Traçabilité : 9 liens **bug → test** et 19 liens **test → user story**.
+- Les 14 tests possèdent leurs étapes Xray (0 test sans étape).
 - L'exécution `WTQA-32` est **associée au plan `WTQA-31`** (panneau
   *Test Executions* du plan alimenté).
 - Arborescence Test Repository : `WebTours > module > type`.
@@ -182,7 +186,7 @@ Xray génère automatiquement :
 Exporter le rapport en PDF/CSV et l'archiver dans le dépôt ou dans Jira.
 
 Un export local des statuts est disponible :
-`jira-xray/WebTours_Resultats_Execution.csv` (9 lignes, 0 PASS / 9 FAIL),
+`jira-xray/WebTours_Resultats_Execution.csv` (14 lignes, 5 PASS / 9 FAIL),
 régénérable avec `python scripts/export_results.py`.
 
 ### 9.1 JQL utiles
@@ -196,7 +200,7 @@ project = WTQA AND issuetype = Test AND "Test Status" = FAIL
 
 ## 10. Définition de terminé
 
-- [ ] 9 tests importés et rangés dans les bons dossiers.
+- [ ] 14 tests importés et rangés dans les bons dossiers.
 - [ ] Test Plan créé et complété.
 - [ ] Test Execution créé et exécuté à 100 %.
 - [ ] 15 bugs créés et liés aux tests.
