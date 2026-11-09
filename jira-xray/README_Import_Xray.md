@@ -1,5 +1,12 @@
 # Import Jira / Xray – WebTours QA
 
+> **État actuel : l'import a déjà été réalisé par API** dans le projet
+> `WTQA` – WEB_TOURS QA (36 tests, 15 bugs, 6 stories, Test Plan `WTQA-58`,
+> Test Execution `WTQA-59`). Voir `RESULTATS_IMPORT.md` et
+> `README_API_Automatisation.md`.
+> Ce document décrit la procédure **manuelle de repli**, utile pour rejouer
+> l'import dans un autre projet Jira ou sans les identifiants API.
+
 Ce dossier contient les fichiers prêts à importer dans Jira et Xray.
 
 | Fichier | Contenu | Import |

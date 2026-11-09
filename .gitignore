@@ -48,5 +48,8 @@ desktop.ini
 # Jenkins / secrets
 # ---------------------------------------------------------------------------
 .env
+.env.*
+!.env.local.example
 *.secret
 credentials*
+jira-credentials*

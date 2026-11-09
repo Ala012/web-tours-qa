@@ -24,6 +24,7 @@ Ce dépôt contient :
 Mini-Projet/
 ├─ README.md
 ├─ .gitignore
+├─ .env.local.example            # modèle des clés Jira/Xray
 ├─ docs/
 │  ├─ 01_Plan_de_Test.md
 │  ├─ 02_User_Stories_JIRA.md
@@ -45,7 +46,9 @@ Mini-Projet/
 │  ├─ WebTours_UserStories.csv   # import des user stories dans Jira
 │  ├─ WebTours_Bugs.csv          # import des anomalies dans Jira
 │  ├─ WebTours_Resultats_Execution.csv  # statuts PASS/FAIL locaux
-│  └─ README_Import_Xray.md
+│  ├─ README_Import_Xray.md
+│  ├─ README_API_Automatisation.md     # génération des clés API
+│  └─ RESULTATS_IMPORT.md              # clés et vérification de l'import
 ├─ automation/
 │  ├─ requirements.txt
 │  ├─ pytest.ini
@@ -57,10 +60,18 @@ Mini-Projet/
 │  └─ reports/                   # rapport HTML généré
 ├─ scripts/
 │  ├─ generate_test_cases.py     # régénère les fiches + CSV
+│  ├─ export_results.py          # rapport d'exécution CSV
 │  ├─ start_webtours.bat
 │  ├─ stop_webtours.bat
 │  ├─ capture_evidence.py        # captures d'écran des bugs
-│  └─ export_results.py          # rapport d'exécution CSV
+│  ├─ check_jira_access.py       # vérifie les identifiants API
+│  ├─ jira_create_project.py     # crée le projet WTQA
+│  ├─ jira_xray_setup.py         # active les types Xray
+│  ├─ jira_import.py             # importe stories/tests/bugs/exécution
+│  ├─ jira_verify.py             # vérifie compteurs et statuts
+│  ├─ jira_discover.py           # diagnostic projets/types
+│  ├─ jira_inspect.py            # compare tests locaux et Jira
+│  └─ jira_show_issue.py         # affiche un ticket + étapes Xray
 └─ ci/
    ├─ Jenkinsfile
    └─ README_Jenkins.md
@@ -130,6 +141,26 @@ python scripts/generate_test_cases.py
 
 ## 4. Test manuel et Jira / Xray
 
+### 4.1 Import automatisé (réalisé)
+
+Le projet **`WTQA` – WEB_TOURS QA** a été créé et alimenté par API :
+
+| Élément | Quantité | Clés |
+|---|---|---|
+| User stories | 6 | `WTQA-2` à `WTQA-7` |
+| Bugs | 15 | `WTQA-8` à `WTQA-22` |
+| Tests manuels | 36 | `WTQA-1`, `WTQA-23` à `WTQA-57` |
+| Test Plan | 1 | `WTQA-58` (36 tests) |
+| Test Execution | 1 | `WTQA-59` (20 PASSED / 16 FAILED) |
+
+Détails et vérification : `jira-xray/RESULTATS_IMPORT.md`.
+
+```bat
+python scripts\jira_verify.py
+```
+
+### 4.2 Import manuel (solution de repli)
+
 1. Créer le projet Jira **WebTours QA** (clé suggérée : `WTQA`).
 2. Importer `jira-xray/WebTours_UserStories.csv` (issues de type **Story**).
 3. Installer **Xray** sur le projet.
@@ -139,8 +170,8 @@ python scripts/generate_test_cases.py
 7. Exécuter les tests, passer les statuts à **PASS / FAIL / TODO**.
 8. Créer les anomalies à partir de `jira-xray/WebTours_Bugs.csv`.
 
-Le mode opératoire détaillé est dans `jira-xray/README_Import_Xray.md` et
-`docs/03_Plan_Execution_Xray.md`.
+Le mode opératoire détaillé est dans `jira-xray/README_Import_Xray.md`,
+`jira-xray/README_API_Automatisation.md` et `docs/03_Plan_Execution_Xray.md`.
 
 ---
 

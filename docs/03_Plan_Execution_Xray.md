@@ -122,6 +122,34 @@ Pour chaque test :
 | TODO | 0 | Tous exécutés |
 | BLOCKED | 0 | Aucun |
 
+### 7.2 Import automatisé réalisé
+
+L'exécution a été créée et alimentée par API dans le projet **`WTQA` – WEB_TOURS QA**
+(<https://alaachaabouni09.atlassian.net/jira/software/projects/WTQA/boards>).
+
+| Élément | Quantité | Clé(s) Jira |
+|---|---|---|
+| User stories | 6 | `WTQA-2` à `WTQA-7` |
+| Bugs | 15 | `WTQA-8` à `WTQA-22` |
+| Tests manuels | 36 | `WTQA-1`, `WTQA-23` à `WTQA-57` |
+| Test Plan | 1 | `WTQA-58` – 36 tests |
+| Test Execution | 1 | `WTQA-59` – 20 PASSED / 16 FAILED |
+
+- Environnement d'exécution : `Windows11-Chrome-WebTours-local`.
+- Les statuts Xray sont **PASSED** (20) et **FAILED** (16).
+- Traçabilité : 16 liens **bug → test** et 48 liens **test → user story**.
+- Les 36 tests possèdent leurs étapes Xray (0 test sans étape).
+
+Vérification reproductible :
+
+```bat
+cd /d "D:\web tours\Mini-Projet"
+python scripts\jira_verify.py
+```
+
+Le détail des clés et la sortie de vérification sont dans
+`jira-xray/RESULTATS_IMPORT.md`.
+
 ## 8. Création des anomalies
 
 Deux options :
