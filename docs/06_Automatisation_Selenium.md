@@ -175,17 +175,45 @@ Variables d'environnement :
 
 ## 8. Jenkins
 
-### 8.1 Préparation
+### 8.1 Dépôt GitHub
 
-1. Installer Jenkins (Windows ou Linux avec agent Windows).
-2. Installer les plugins : **Pipeline**, **HTML Publisher**, **JUnit**,
-   **Git**.
-3. Créer un job **Pipeline**.
-4. Dans **Pipeline → Definition**, choisir **Pipeline script from SCM**.
-5. SCM : Git, URL du dépôt, branche `main`.
-6. Script Path : `ci/Jenkinsfile`.
+Le projet est publié sur GitHub :
+<https://github.com/Ala012/web-tours-qa> (branche `main`).
 
-### 8.2 Pipeline
+### 8.2 Installation locale (réalisée)
+
+Jenkins est lancé **sans installation** (WAR + JDK 21 local) :
+
+```powershell
+cd "D:\web tours\Mini-Projet"
+powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1
+```
+
+| Élément | Valeur |
+|---|---|
+| URL | <http://127.0.0.1:8080> |
+| Utilisateur | `admin` |
+| Mot de passe | `D:\web tours\jenkins\admin-password.txt` (hors dépôt) |
+| Jenkins | LTS (WAR), Java 21 (Temurin) |
+| Job | `WebTours-QA` |
+| Definition | Pipeline script from SCM |
+| SCM | `https://github.com/Ala012/web-tours-qa.git` |
+| Branche | `*/main` |
+| Script Path | `ci/Jenkinsfile` |
+| Label de l'agent | `windows` |
+
+Plugins installés : **workflow-aggregator**, **git**, **junit**,
+**htmlpublisher**, **timestamper**, **ws-cleanup**.
+
+Le job est défini dans `ci/jenkins/WebTours-QA.config.xml` et peut être recréé
+par CLI :
+
+```powershell
+java -jar jenkins-cli.jar -s http://127.0.0.1:8080/ -auth "admin:<motdepasse>" `
+  create-job WebTours-QA < ci\jenkins\WebTours-QA.config.xml
+```
+
+### 8.3 Pipeline
 
 Le `Jenkinsfile` :
 
@@ -199,7 +227,23 @@ Le `Jenkinsfile` :
 8. archive `automation/reports/**` ;
 9. arrête WebTours dans `post { always { ... } }`.
 
-### 8.3 Exécution locale du pipeline
+### 8.4 Résultat du build
+
+**Build #1 : SUCCESS** (déclenché manuellement).
+
+```text
+collected 14 items
+5 passed, 9 xfailed
+JUnit : total=14, pass=5, skip=9, fail=0
+```
+
+- Rapport HTML : <http://127.0.0.1:8080/job/WebTours-QA/lastBuild/Rapport_20WebTours/>
+- Résultats JUnit : page **Test Result** du build.
+
+> Le pipeline étant sur `127.0.0.1`, le webhook GitHub → Jenkins n'est pas
+> disponible. Les builds sont déclenchés manuellement (interface ou CLI).
+
+### 8.5 Exécution locale du pipeline
 
 ```bat
 cd /d "D:\web tours\Mini-Projet"

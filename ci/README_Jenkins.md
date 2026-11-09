@@ -3,17 +3,21 @@
 Ce dossier contient le pipeline `Jenkinsfile` qui exécute la suite
 d'automatisation Selenium/pytest et publie les rapports.
 
+- Dépôt GitHub : <https://github.com/Ala012/web-tours-qa>
+- Jenkins local (WAR + JDK 21, job `WebTours-QA`) : voir
+  [`jenkins/README.md`](jenkins/README.md)
+
 ## 1. Prérequis sur l'agent Jenkins
 
 | Élément | Détail |
 |---|---|
 | OS | Windows (agent avec le label `windows`) |
-| Java | Java 8 (nécessaire au serveur WebTours) |
+| Java | Java 21+ pour Jenkins ; Java 8 pour le serveur WebTours |
 | Perl | Strawberry Perl 5.10.1.0 |
 | Python | 3.10+ dans le `PATH` |
 | Navigateur | Google Chrome (Selenium Manager gère le driver) |
 | WebTours | installé dans `D:\web tours\WebTours` |
-| Plugins Jenkins | **HTML Publisher**, **JUnit**, **Timestamper** |
+| Plugins Jenkins | **Pipeline**, **Git**, **HTML Publisher**, **JUnit**, **Timestamper** |
 
 ## 2. Création du job
 
@@ -21,10 +25,13 @@ d'automatisation Selenium/pytest et publie les rapports.
 2. Section **Pipeline** :
    - **Definition** : `Pipeline script from SCM`
    - **SCM** : `Git`
-   - **Repository URL** : URL du dépôt Git du projet
+   - **Repository URL** : `https://github.com/Ala012/web-tours-qa.git`
    - **Branch Specifier** : `*/main`
    - **Script Path** : `ci/Jenkinsfile`
 3. Enregistrer puis **Build Now**.
+
+> Le job peut aussi être créé directement depuis
+> `ci/jenkins/WebTours-QA.config.xml` (voir `ci/jenkins/README.md`).
 
 ## 3. Ce que fait le pipeline
 
@@ -42,6 +49,9 @@ Checkout
 - Rapport HTML : lien **Rapport WebTours** sur la page du build.
 - Résultats JUnit : **Test Result** du build.
 - Artefacts archivés : `automation/reports/**`.
+
+**Build #1 : SUCCESS** — 14 tests collectés, **5 passed / 9 xfailed**
+(JUnit : `total=14, pass=5, skip=9, fail=0`).
 
 Les tests marqués `xfail` correspondent aux **bugs connus et documentés**.
 Ils sont comptés comme `xfailed` et ne rendent pas le build instable.

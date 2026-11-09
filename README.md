@@ -82,7 +82,12 @@ Mini-Projet/
 │  └─ jira_show_issue.py         # affiche un ticket + étapes Xray
 └─ ci/
    ├─ Jenkinsfile
-   └─ README_Jenkins.md
+   ├─ README_Jenkins.md
+   └─ jenkins/                 # Jenkins local (WAR, JDK 21, job, init)
+      ├─ run-jenkins.ps1
+      ├─ WebTours-QA.config.xml
+      ├─ init.groovy.d/01-admin.groovy
+      └─ README.md
 ```
 
 ---
@@ -217,16 +222,28 @@ Le fichier `ci/Jenkinsfile` :
 4. publie le rapport HTML et archive les résultats ;
 5. arrête le serveur.
 
-Créer un job **Pipeline** dans Jenkins, pointer le dépôt Git et le chemin
-`ci/Jenkinsfile`. Voir la section Jenkins de
-`docs/06_Automatisation_Selenium.md` et `ci/README_Jenkins.md`.
+Le dépôt GitHub est : <https://github.com/Ala012/web-tours-qa>
+
+Jenkins peut être lancé en local sur Windows (sans installation) :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1
+```
+
+- URL : <http://127.0.0.1:8080>
+- Utilisateur : `admin` (mot de passe dans `D:\web tours\jenkins\admin-password.txt`)
+- Job : **WebTours-QA** (Pipeline from SCM, `ci/Jenkinsfile`, branche `main`)
+
+Voir `ci/jenkins/README.md`, `ci/README_Jenkins.md` et la section Jenkins de
+`docs/06_Automatisation_Selenium.md`.
 
 ---
 
 ## 7. Versionnement Git
 
-Le dépôt est initialisé sur la branche `main`. Le fichier `.gitignore` exclut
-les caches Python, les rapports générés et les drivers de navigateur.
+Le dépôt est publié sur GitHub : <https://github.com/Ala012/web-tours-qa>
+(branche `main`). Le fichier `.gitignore` exclut les caches Python, les
+rapports générés et les drivers de navigateur.
 
 ```bat
 cd /d "D:\web tours\Mini-Projet"
@@ -235,11 +252,10 @@ git add .
 git commit -m "Mini-projet QA WebTours : tests manuels, Xray, Selenium et CI"
 ```
 
-Pour publier le dépôt sur GitHub / GitLab :
+Pour republier les modifications :
 
 ```bat
-git remote add origin <URL_DU_DEPOT>
-git push -u origin main
+git push origin main
 ```
 
 Les rapports (`automation/reports/`) sont régénérés à chaque exécution et ne
