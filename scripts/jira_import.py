@@ -336,6 +336,25 @@ class Xray:
         execution = data["createTestExecution"]["testExecution"]
         return {"key": execution["jira"]["key"], "id": execution["issueId"]}
 
+    def add_executions_to_plan(
+        self, plan_id: str, execution_ids: list[str]
+    ) -> dict:
+        query = """
+        mutation AddExecutionsToPlan($planId: String!, $execIds: [String]!) {
+          addTestExecutionsToTestPlan(
+            issueId: $planId
+            testExecIssueIds: $execIds
+          ) {
+            addedTestExecutions
+            warning
+          }
+        }
+        """
+        data = self.graphql(
+            query, {"planId": plan_id, "execIds": execution_ids}
+        )
+        return data["addTestExecutionsToTestPlan"]
+
     def import_results(self, execution_key: str, results: list[dict]) -> dict:
         response = requests.post(
             f"{self.base}/api/v2/import/execution",
@@ -509,8 +528,15 @@ def create_execution_phase(
         )
         print(f"[OK] Test Execution {execution['key']} : {EXEC_SUMMARY}")
 
-    if dry_run or not execution:
+    if dry_run or not execution or not plan:
         return
+
+    # Association de l'execution au plan (sinon le plan reste "non execute").
+    linked = xray.add_executions_to_plan(plan["id"], [execution["id"]])
+    print(
+        f"[OK] Test Execution {execution['key']} associee au Test Plan "
+        f"{plan['key']} : {linked.get('addedTestExecutions', 0)}"
+    )
 
     results_rows = read_csv("WebTours_Resultats_Execution.csv")
     results = []

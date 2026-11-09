@@ -47,7 +47,9 @@ WebTours
 | FAILED | 9 |
 | **Total** | **9** |
 
-Le Test Plan `WTQA-31` contient les **9 tests**.
+Le Test Plan `WTQA-31` contient les **9 tests** et l'exécution `WTQA-32` lui est
+associée (mutation Xray `addTestExecutionsToTestPlan`), donc le panneau
+**Test Executions** du plan n'est plus vide.
 
 ## 5. Traçabilité
 
@@ -77,7 +79,7 @@ Test Execution : WTQA-32 - Exécution manuelle – Sprint 1
   - FAILED       : 9
 [OK] Statuts conformes : 9 FAILED (campagne réduite).
 
-Test Plan : WTQA-31 - Plan de test WebTours – Sprint 1 | 9 tests
+Test Plan : WTQA-31 - Plan de test WebTours – Sprint 1 | 9 tests | 1 execution(s)
 
 Tests Xray : 9 | avec etapes : 9 | sans etapes : 0
 ```

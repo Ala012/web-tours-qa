@@ -130,6 +130,7 @@ def main() -> int:
             issueId
             jira(fields: ["key", "summary"])
             tests(limit: 100) { total }
+            testExecutions(limit: 100) { total }
           }
         }
         """
@@ -146,7 +147,8 @@ def main() -> int:
             plan_data = plan_response["data"]["getTestPlan"]
             print(
                 f"\nTest Plan : {plan['key']} - {plan['fields']['summary']} "
-                f"| {plan_data.get('tests', {}).get('total')} tests"
+                f"| {plan_data.get('tests', {}).get('total')} tests "
+                f"| {plan_data.get('testExecutions', {}).get('total')} execution(s)"
             )
         else:
             print("[ATTENTION] Verification du Test Plan impossible.")

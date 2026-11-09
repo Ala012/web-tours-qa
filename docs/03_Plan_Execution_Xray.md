@@ -132,6 +132,8 @@ L'exécution a été créée et alimentée par API dans le projet **`WTQA` – W
 - Les 9 statuts Xray sont **FAILED**.
 - Traçabilité : 9 liens **bug → test** et 12 liens **test → user story**.
 - Les 9 tests possèdent leurs étapes Xray (0 test sans étape).
+- L'exécution `WTQA-32` est **associée au plan `WTQA-31`** (panneau
+  *Test Executions* du plan alimenté).
 - Arborescence Test Repository : `WebTours > module > type`.
 
 Vérification reproductible :
