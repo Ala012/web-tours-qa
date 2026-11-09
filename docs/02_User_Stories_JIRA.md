@@ -33,8 +33,7 @@
       authentification.
 
 **Priorité :** High
-**Tests :** RSVA-FT-01, RSVA-FT-02, RSVA-ET-01, RSVA-ET-02, RSVA-BT-03,
-RSVA-PT-01, RSVA-PT-02, RSVA-PT-03
+**Tests :** RSVA-BT-03, RSVA-PT-01, RSVA-PT-03
 
 ---
 
@@ -54,7 +53,7 @@ RSVA-PT-01, RSVA-PT-02, RSVA-PT-03
 - [ ] Une politique minimale de mot de passe est appliquée.
 
 **Priorité :** High
-**Tests :** RSVA-FT-03, RSVA-ET-03, RSVA-BT-01, RSVA-BT-02
+**Tests :** RSVA-BT-03, RSVA-PT-01, RSVA-PT-03
 
 ---
 
@@ -78,8 +77,7 @@ RSVA-PT-01, RSVA-PT-02, RSVA-PT-03
 - [ ] L'achat direct sans sélection est refusé.
 
 **Priorité :** High
-**Tests :** RSVF-FT-01/02/03, RSVF-ET-01/02/03, RSVF-BT-01/02/03,
-RSVF-PT-01/02/03
+**Tests :** RSVF-ET-01, RSVF-PT-01, RSVF-PT-02
 
 ---
 
@@ -100,8 +98,7 @@ RSVF-PT-01/02/03
 - [ ] L'itinéraire n'est pas accessible sans session.
 
 **Priorité :** High
-**Tests :** RSVI-FT-01/02/03, RSVI-ET-01/02/03, RSVI-BT-01/02/03,
-RSVI-PT-01/02/03
+**Tests :** RSVI-PT-01, RSVI-PT-02, RSVI-PT-03
 
 ---
 
@@ -118,7 +115,7 @@ RSVI-PT-01/02/03
 - [ ] Les pages protégées redeviennent inaccessibles après déconnexion.
 
 **Priorité :** Medium
-**Tests :** RSVA-FT-02
+**Tests :** – (hors campagne réduite)
 
 ---
 
@@ -138,7 +135,8 @@ RSVI-PT-01/02/03
 - [ ] Les formulaires sensibles sont protégés contre le CSRF.
 
 **Priorité :** Critical
-**Tests :** RSVA-PT-01/02/03, RSVF-PT-01/02/03, RSVI-PT-01/02/03
+**Tests :** RSVA-PT-01, RSVA-PT-03, RSVF-PT-01, RSVF-PT-02,
+RSVI-PT-01, RSVI-PT-02, RSVI-PT-03
 
 ---
 

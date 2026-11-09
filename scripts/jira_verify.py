@@ -6,6 +6,7 @@ Usage :
 """
 from __future__ import annotations
 
+import csv
 import json
 import os
 import sys
@@ -107,10 +108,10 @@ def main() -> int:
     for name, count in sorted(statuses.items(), key=lambda item: str(item[0])):
         print(f"  - {name:<12} : {count}")
 
-    expected = {"PASSED": 20, "FAILED": 16}
+    expected = {"FAILED": 9}
     actual = {str(name).upper(): count for name, count in statuses.items()}
     if actual == expected:
-        print("[OK] Statuts conformes : 20 PASS / 16 FAIL.")
+        print("[OK] Statuts conformes : 9 FAILED (campagne réduite).")
     else:
         print(f"[ATTENTION] Statuts inattendus : {actual}")
 
@@ -150,7 +151,7 @@ def main() -> int:
         else:
             print("[ATTENTION] Verification du Test Plan impossible.")
 
-    # Verification des etapes des 36 tests
+    # Verification des etapes des 9 tests
     test_query = """
     query AllTests($jql: String!) {
       getTests(jql: $jql, limit: 100) {
@@ -186,6 +187,57 @@ def main() -> int:
             print("  Sans etapes : " + ", ".join(no_steps))
     else:
         print("[ATTENTION] Verification des etapes impossible.")
+
+    # Verification des dossiers du Test Repository
+    project_info = session.get(
+        f"{base}/rest/api/3/project/{project}", timeout=30
+    ).json()
+    project_id = str(project_info.get("id", ""))
+    csv_path = (
+        Path(__file__).resolve().parent.parent
+        / "jira-xray"
+        / "WebTours_Xray_Import.csv"
+    )
+    folders: list[str] = []
+    if csv_path.exists():
+        with csv_path.open(encoding="utf-8-sig", newline="") as handle:
+            for row in csv.DictReader(handle):
+                folder = (row.get("Folder") or "").strip()
+                if folder and folder not in folders:
+                    folders.append(folder)
+
+    folder_query = """
+    query Folder($projectId: String!, $path: String!) {
+      getFolder(projectId: $projectId, path: $path) {
+        name
+        path
+        testsCount
+      }
+    }
+    """
+    print("\nDossiers Xray :")
+    for folder in folders:
+        payload = requests.post(
+            f"{xray_base}/api/v2/graphql",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "query": folder_query,
+                "variables": {"projectId": project_id, "path": folder},
+            },
+            timeout=60,
+        ).json()
+        if "errors" in payload:
+            message = payload["errors"][0].get("message", "")
+            print(f"  - {folder} : [ERREUR] {message[:120]}")
+            continue
+        data = payload.get("data", {}).get("getFolder")
+        if data:
+            print(f"  - {data.get('path')} : {data.get('testsCount')} tests")
+        else:
+            print(f"  - {folder} : [ABSENT]")
 
     return 0
 

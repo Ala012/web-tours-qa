@@ -8,6 +8,7 @@ Exécution : python scripts/generate_test_cases.py
 from __future__ import annotations
 
 import csv
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -646,6 +647,34 @@ TESTS = [
     },
 ]
 
+# ---------------------------------------------------------------------------
+# Campagne réduite : 3 tests réels par module (9 au total).
+# Les scénarios conservés sont ceux qui échouent réellement ou font planter
+# l'application (sécurité + crash). Les autres définitions restent ci-dessus
+# comme backlog documenté mais ne sont plus générées ni importées.
+# ---------------------------------------------------------------------------
+CAMPAIGN_IDS = [
+    # RSVA – Authentification (sécurité)
+    "RSVA-PT-01",
+    "RSVA-PT-03",
+    "RSVA-BT-03",
+    # RSVF – Vols (crash + sécurité)
+    "RSVF-ET-01",
+    "RSVF-PT-01",
+    "RSVF-PT-02",
+    # RSVI – Itinéraire (sécurité)
+    "RSVI-PT-01",
+    "RSVI-PT-02",
+    "RSVI-PT-03",
+]
+TESTS = [test for test in TESTS if test["id"] in CAMPAIGN_IDS]
+
+XRAY_MODULE_FOLDERS = {
+    "RSVA": "RSVA - Authentification",
+    "RSVF": "RSVF - Flight",
+    "RSVI": "RSVI - Itinerary",
+}
+
 
 def md_escape(text: str) -> str:
     return text.replace("|", "\\|")
@@ -734,7 +763,7 @@ def write_xray_csv() -> Path:
                 f"Statut constaté : {t['status']}"
             )
             labels = f"WebTours {t['module']} {t['type']} {t['id']} MANUAL-MANUAL"
-            folder = f"/WebTours/{mod['folder']}/{typ['folder']}"
+            folder = f"/WebTours/{XRAY_MODULE_FOLDERS[t['module']]}/{typ['folder']}"
             writer.writerow([
                 "Test",
                 f"{t['id']} – {t['summary']}",
@@ -796,6 +825,9 @@ def write_bugs_csv() -> Path:
 
 
 def main() -> None:
+    # Supprime les anciennes fiches pour éviter les tests obsolètes.
+    if MANUAL.exists():
+        shutil.rmtree(MANUAL)
     for t in TESTS:
         write_markdown(t)
     xray = write_xray_csv()

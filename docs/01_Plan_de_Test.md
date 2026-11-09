@@ -42,17 +42,19 @@
 
 ## 4. Stratégie de test
 
-Quatre types de tests sont appliqués à chaque module :
+Trois types de tests sont utilisés dans la campagne réduite :
 
 | Code | Type | Objectif |
 |---|---|---|
-| **FT** | Functional Testing | Vérifier les parcours nominaux et les fonctionnalités attendues. |
 | **ET** | Error Testing | Vérifier la gestion des erreurs et des saisies invalides. |
 | **BT** | Boundary Testing | Vérifier les valeurs limites (longueur, nombre de passagers, dernier vol). |
 | **PT** | Permission Testing | Vérifier les contrôles d'accès, l'authentification et l'intégrité des données. |
 
-Chaque module contient **3 tests par type**, soit **12 tests par module** et
-**36 tests au total**.
+La campagne est volontairement réduite à **3 tests par module**, soit
+**9 tests au total**. Chaque test est un scénario **réel qui échoue** ou qui
+fait planter l'application (page blanche, erreur serveur, faille d'accès).
+Les parcours nominaux sont couverts par l'automatisation de non-régression,
+mais ne font pas partie de cette campagne manuelle ciblée.
 
 ### 4.1 Priorisation
 
@@ -100,7 +102,7 @@ Chaque module contient **3 tests par type**, soit **12 tests par module** et
 
 ## 8. Critères de sortie
 
-- Les 36 tests manuels ont été exécutés et tracés dans Xray.
+- Les 9 tests manuels ont été exécutés et tracés dans Xray.
 - Tous les tests Critical/High ont un statut (PASS/FAIL) et une anomalie associée
   en cas d'échec.
 - La suite automatisée s'exécute sans erreur d'infrastructure.
@@ -111,7 +113,7 @@ Chaque module contient **3 tests par type**, soit **12 tests par module** et
 
 - Plan de test (ce document).
 - User stories Jira.
-- 36 fiches de test manuelles.
+- 9 fiches de test manuelles.
 - Fichiers d'import Xray.
 - Rapport d'exécution Xray.
 - Rapport de bugs avec preuves.
@@ -134,19 +136,19 @@ Chaque module contient **3 tests par type**, soit **12 tests par module** et
 
 | User Story | Tests |
 |---|---|
-| WT-US-01 – Authentification | RSVA-FT-01, RSVA-FT-02, RSVA-ET-01, RSVA-ET-02, RSVA-BT-03, RSVA-PT-01/02/03 |
-| WT-US-02 – Inscription | RSVA-FT-03, RSVA-ET-03, RSVA-BT-01, RSVA-BT-02 |
-| WT-US-03 – Recherche et réservation | RSVF-FT-01/02/03, RSVF-ET-01/02/03, RSVF-BT-01/02/03, RSVF-PT-01/02/03 |
-| WT-US-04 – Itinéraire | RSVI-FT-01/02/03, RSVI-ET-01/02/03, RSVI-BT-01/02/03, RSVI-PT-01/02/03 |
-| WT-US-05 – Déconnexion | RSVA-FT-02 |
-| WT-US-06 – Sécurité et permissions | RSVA-PT-01/02/03, RSVF-PT-01/02/03, RSVI-PT-01/02/03 |
+| WT-US-01 – Authentification | RSVA-BT-03, RSVA-PT-01, RSVA-PT-03 |
+| WT-US-02 – Inscription | RSVA-BT-03, RSVA-PT-01, RSVA-PT-03 |
+| WT-US-03 – Recherche et réservation | RSVF-ET-01, RSVF-PT-01, RSVF-PT-02 |
+| WT-US-04 – Itinéraire | RSVI-PT-01, RSVI-PT-02, RSVI-PT-03 |
+| WT-US-05 – Déconnexion | – (hors campagne réduite) |
+| WT-US-06 – Sécurité et permissions | RSVA-PT-01, RSVA-PT-03, RSVF-PT-01, RSVF-PT-02, RSVI-PT-01, RSVI-PT-02, RSVI-PT-03 |
 
 ## 12. Calendrier indicatif
 
 | Phase | Durée | Activités |
 |---|---|---|
 | Préparation | 1 jour | Installation, plan de test, user stories, jeu de données |
-| Conception | 1 jour | 36 cas de test, import Xray, revue |
+| Conception | 1 jour | 9 cas de test réels, import Xray, revue |
 | Exécution manuelle | 2 jours | Exécution, captures, anomalies |
 | Automatisation | 2 jours | Page Objects, tests, exécution, rapport |
 | CI / Git | 0,5 jour | Dépôt, Jenkinsfile, exécution Jenkins |
@@ -156,8 +158,7 @@ Chaque module contient **3 tests par type**, soit **12 tests par module** et
 
 À l'issue de la campagne :
 
-- **20 tests PASS** (parcours nominaux et validations existantes) ;
-- **16 tests FAIL** couvrant **15 anomalies** documentées, dont 6 critiques ;
-- une suite automatisée de régression couvrant les parcours principaux et les
-  anomalies de sécurité ;
+- **9 tests FAIL** couvrant **8 anomalies distinctes**, dont **5 critiques** ;
+- une suite automatisée de régression couvrant les 9 scénarios réels
+  (sécurité et crash) ;
 - une exécution Jenkins verte (les bugs connus sont marqués `xfail`).

@@ -20,9 +20,9 @@ automation/
 │  ├─ flight_page.py        # recherche, sélection, paiement
 │  └─ itinerary_page.py     # affichage / suppression
 ├─ tests/
-│  ├─ test_rsva_authentication.py   # 12 tests
-│  ├─ test_rsvf_flight.py           # 12 tests
-│  └─ test_rsvi_itinerary.py        # 12 tests
+│  ├─ test_rsva_authentication.py   # 3 tests
+│  ├─ test_rsvf_flight.py           # 3 tests
+│  └─ test_rsvi_itinerary.py        # 3 tests
 ├─ utils/
 │  └─ webtours_api.py       # client requests pour les POST forgés
 └─ reports/
@@ -102,7 +102,7 @@ python -m pytest -m pt -v
 ### Un test précis
 
 ```bat
-python -m pytest tests/test_rsva_authentication.py::test_rsva_ft_01_login_valide -v
+python -m pytest tests/test_rsva_authentication.py::test_rsva_pt_01_reservations_sans_login -v
 ```
 
 ### Rapport HTML
@@ -115,15 +115,15 @@ Le rapport est généré automatiquement dans `reports/report.html` grâce à
 Exécution du 09/11/2026 :
 
 ```text
-collected 36 items
-tests\test_rsva_authentication.py .......xxxxx
-tests\test_rsvf_flight.py ...xxx.xxxxx
-tests\test_rsvi_itinerary.py .........xxx
-================= 20 passed, 16 xfailed in 426.81s (0:07:06) ==================
+collected 9 items
+tests\test_rsva_authentication.py xxx
+tests\test_rsvf_flight.py xxx
+tests\test_rsvi_itinerary.py xxx
+==================== 9 xfailed in 72.30s (0:01:12) ====================
 ```
 
-- **20 PASS** : parcours nominaux et validations existantes.
-- **16 XFAIL** : anomalies connues (voir `docs/04_Bugs_Detectes.md`).
+- **9 XFAIL** : scénarios réels en échec (sécurité et crash), voir
+  `docs/04_Bugs_Detectes.md`.
 
 > Les `xfail` sont volontaires : ils prouvent l'anomalie sans casser la CI.
 > Lorsqu'un bug est corrigé, le test correspondant devient `XPASS` ; il faut
@@ -133,25 +133,19 @@ tests\test_rsvi_itinerary.py .........xxx
 
 | Test | Anomalie |
 |---|---|
-| `test_rsva_bt_02_mot_de_passe_1_caractere` | BUG-11 |
 | `test_rsva_bt_03_username_caracteres_speciaux` | BUG-12 |
 | `test_rsva_pt_01_reservations_sans_login` | BUG-01 |
-| `test_rsva_pt_02_itinerary_sans_login` | BUG-02 |
 | `test_rsva_pt_03_admin_sans_login` | BUG-03 |
 | `test_rsvf_et_01_date_vide` | BUG-05 |
-| `test_rsvf_et_02_date_invalide` | BUG-05 |
-| `test_rsvf_et_03_meme_ville` | BUG-07 |
-| `test_rsvf_bt_02_zero_passager` | BUG-08 |
-| `test_rsvf_bt_03_999_passagers` | BUG-08 |
 | `test_rsvf_pt_01_prix_modifie_post` | BUG-09 |
 | `test_rsvf_pt_02_flightid_falsifie` | BUG-10 |
-| `test_rsvf_pt_03_buy_direct` | BUG-10 |
 | `test_rsvi_pt_01_idor` | BUG-04 |
 | `test_rsvi_pt_02_acces_sans_session` | BUG-02 |
 | `test_rsvi_pt_03_suppression_sans_session` | BUG-02 |
 
-Les anomalies BUG-06, BUG-13, BUG-14 et BUG-15 sont documentées et vérifiées
-manuellement (elles ne font pas l'objet d'un test automatisé dédié).
+Les autres anomalies (BUG-06, BUG-07, BUG-08, BUG-11, BUG-13, BUG-14, BUG-15)
+restent documentées dans `docs/04_Bugs_Detectes.md` mais ne font pas partie de
+la campagne réduite.
 
 ## 7. Données et isolation
 

@@ -3,8 +3,8 @@
 
 Phases :
     meta       : 6 user stories + 15 bugs (API REST Jira)
-    tests      : 36 tests manuels avec etapes (API GraphQL Xray)
-    execution  : Test Plan, Test Execution, resultats 20 PASS / 16 FAIL, liens
+    tests      : 9 tests manuels avec etapes (API GraphQL Xray)
+    execution  : Test Plan, Test Execution, resultats 9 FAIL, liens
 
 Exemples :
     python scripts/jira_import.py --phase meta --limit 1
@@ -120,6 +120,10 @@ class Jira:
         self.session = requests.Session()
         self.session.auth = (email, token)
         self.session.headers.update({"Accept": "application/json"})
+        info = self.session.get(
+            f"{self.base}/rest/api/3/project/{project}", timeout=30
+        )
+        self.project_id = str(info.json().get("id", "")) if info.status_code == 200 else ""
 
     def _error(self, action: str, response: requests.Response) -> None:
         raise RuntimeError(
@@ -268,6 +272,30 @@ class Xray:
             "warnings": data["createTest"].get("warnings", []),
         }
 
+    def create_folder(self, project_id: str, path: str, test_ids: list[str]) -> dict:
+        create_query = """
+        mutation CreateFolder($projectId: String!, $path: String!, $tests: [String]) {
+          createFolder(projectId: $projectId, path: $path, testIssueIds: $tests) {
+            folder { name path testsCount }
+            warnings
+          }
+        }
+        """
+        add_query = """
+        mutation AddTests($projectId: String!, $path: String!, $tests: [String]!) {
+          addTestsToFolder(projectId: $projectId, path: $path, testIssueIds: $tests) {
+            folder { name path testsCount }
+            warnings
+          }
+        }
+        """
+        variables = {"projectId": project_id, "path": path, "tests": test_ids}
+        try:
+            return self.graphql(create_query, variables)["createFolder"]
+        except RuntimeError:
+            # Le dossier existe deja : on y ajoute simplement les tests.
+            return self.graphql(add_query, variables)["addTestsToFolder"]
+
     def create_plan(self, test_ids: list[str], fields: dict) -> dict:
         query = """
         mutation CreatePlan($tests: [String], $jira: JSON!) {
@@ -370,6 +398,28 @@ def create_meta(jira: Jira, limit: int, dry_run: bool) -> dict[str, dict]:
     return created
 
 
+def create_xray_folders(
+    jira: Jira, xray: Xray, rows: list[dict], test_map: dict[str, dict]
+) -> None:
+    """Crée l'arborescence Test Repository (WebTours > module > type)."""
+    if not jira.project_id:
+        print("[ATTENTION] project_id inconnu : dossiers Xray non crees.")
+        return
+    groups: dict[str, list[str]] = {}
+    for row in rows:
+        folder = (row.get("Folder") or "").strip()
+        summary = row.get("Summary", "")
+        if folder and summary in test_map:
+            groups.setdefault(folder, []).append(test_map[summary]["id"])
+    for folder, ids in groups.items():
+        try:
+            result = xray.create_folder(jira.project_id, folder, ids)
+            count = (result.get("folder") or {}).get("testsCount")
+            print(f"[OK] Dossier Xray {folder} : {len(ids)} tests (total {count})")
+        except RuntimeError as exc:
+            print(f"[ATTENTION] Dossier {folder} : {exc}")
+
+
 def create_tests(jira: Jira, xray: Xray, limit: int, dry_run: bool) -> dict[str, dict]:
     rows = read_csv("WebTours_Xray_Import.csv")
     if limit:
@@ -406,6 +456,8 @@ def create_tests(jira: Jira, xray: Xray, limit: int, dry_run: bool) -> dict[str,
             f"[OK] Test {test['key']} : {summary} "
             f"({len(steps)} etapes){warning}"
         )
+    if not dry_run:
+        create_xray_folders(jira, xray, rows, created)
     return created
 
 
@@ -452,7 +504,7 @@ def create_execution_phase(
             {
                 "project": {"key": jira.project},
                 "summary": EXEC_SUMMARY,
-                "description": "Execution des 36 tests manuels WebTours (Sprint 1).",
+                "description": "Execution des 9 tests manuels WebTours (Sprint 1).",
             },
         )
         print(f"[OK] Test Execution {execution['key']} : {EXEC_SUMMARY}")

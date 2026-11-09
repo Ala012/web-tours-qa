@@ -23,20 +23,23 @@
 | ID | Module | Anomalie | Sévérité | Test(s) |
 |---|---|---|---|---|
 | BUG-01 | RSVA | Recherche de vols accessible sans login | Critical | RSVA-PT-01 |
-| BUG-02 | RSVA/RSVI | Itinéraire accessible sans login | High | RSVA-PT-02, RSVI-PT-02/03 |
+| BUG-02 | RSVA/RSVI | Itinéraire accessible sans login | High | RSVI-PT-02, RSVI-PT-03 |
 | BUG-03 | RSVA | Page admin accessible sans authentification | Critical | RSVA-PT-03 |
 | BUG-04 | RSVI | IDOR : itinéraire d'un autre utilisateur via cookie forgé | Critical | RSVI-PT-01 |
-| BUG-05 | RSVF | Date vide/invalide : page blanche et erreur Perl | High | RSVF-ET-01/02 |
-| BUG-06 | RSVF | Date passée acceptée | High | RSVF-ET-01 (variante) |
-| BUG-07 | RSVF | Départ = arrivée accepté, vols à 0 $ | High | RSVF-ET-03 |
-| BUG-08 | RSVF | Nombre de passagers non validé (0, négatif, 999) | High | RSVF-BT-02/03 |
+| BUG-05 | RSVF | Date vide/invalide : page blanche et erreur Perl | High | RSVF-ET-01 |
+| BUG-06 | RSVF | Date passée acceptée | High | – (hors campagne réduite) |
+| BUG-07 | RSVF | Départ = arrivée accepté, vols à 0 $ | High | – (hors campagne réduite) |
+| BUG-08 | RSVF | Nombre de passagers non validé (0, négatif, 999) | High | – (hors campagne réduite) |
 | BUG-09 | RSVF | Prix manipulable dans le POST | Critical | RSVF-PT-01 |
-| BUG-10 | RSVF | flightID falsifié / achat direct | Critical | RSVF-PT-02/03 |
-| BUG-11 | RSVA | Politique de mot de passe absente | Medium | RSVA-BT-02 |
+| BUG-10 | RSVF | flightID falsifié / achat direct | Critical | RSVF-PT-02 |
+| BUG-11 | RSVA | Politique de mot de passe absente | Medium | – (hors campagne réduite) |
 | BUG-12 | RSVA | Normalisation silencieuse du username | High | RSVA-BT-03 |
 | BUG-13 | RSVA | Mots de passe stockés en clair | Critical | – (audit) |
-| BUG-14 | RSVF | Aucune validation de la carte bancaire | High | RSVF-FT-03 (variante) |
+| BUG-14 | RSVF | Aucune validation de la carte bancaire | High | – (hors campagne réduite) |
 | BUG-15 | Tous | Absence de jetons anti-CSRF | Medium | – (audit) |
+
+> **Campagne réduite :** seuls les 9 tests listés ci-dessus sont rejoués dans
+> Xray. Les autres scénarios restent documentés comme backlog de régression.
 
 ---
 
@@ -74,8 +77,8 @@ valide (cookie signé ou session serveur) avant d'afficher `reservations.pl`.
 - **Module :** RSVA / RSVI
 - **Sévérité :** High
 - **Priorité :** High
-- **Tests :** RSVA-PT-02, RSVI-PT-02, RSVI-PT-03
-- **Automatisé :** `test_rsva_authentication.py::test_rsva_pt_02_itinerary_sans_login` (`xfail`)
+- **Tests :** RSVI-PT-02, RSVI-PT-03
+- **Automatisé :** `test_rsvi_itinerary.py::test_rsvi_pt_02_acces_sans_session`, `test_rsvi_pt_03_suppression_sans_session` (`xfail`)
 
 **Étapes :**
 
@@ -166,8 +169,8 @@ requête.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Tests :** RSVF-ET-01, RSVF-ET-02
-- **Automatisé :** `test_rsvf_flight.py::test_rsvf_et_01_date_vide`, `test_rsvf_et_02_date_invalide` (`xfail`)
+- **Tests :** RSVF-ET-01
+- **Automatisé :** `test_rsvf_flight.py::test_rsvf_et_01_date_vide` (`xfail`)
 
 **Étapes :**
 
@@ -198,8 +201,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** RSVF-ET-01 (variante)
-- **Automatisé :** couvert par `test_rsvf_et_02_date_invalide` / scénario manuel
+- **Test :** – (hors campagne réduite)
+- **Automatisé :** – (hors campagne réduite)
 
 **Étapes :**
 
@@ -220,8 +223,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** RSVF-ET-03
-- **Automatisé :** `test_rsvf_flight.py::test_rsvf_et_03_meme_ville` (`xfail`)
+- **Test :** – (hors campagne réduite)
+- **Automatisé :** – (hors campagne réduite)
 
 **Étapes :**
 
@@ -243,8 +246,8 @@ les bornes mois/jour/année et afficher un message d'erreur.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Tests :** RSVF-BT-02, RSVF-BT-03
-- **Automatisé :** `test_rsvf_flight.py::test_rsvf_bt_02_zero_passager`, `test_rsvf_bt_03_999_passagers` (`xfail`)
+- **Tests :** – (hors campagne réduite)
+- **Automatisé :** – (hors campagne réduite)
 
 **Étapes :**
 
@@ -297,8 +300,8 @@ client ; recalculer à partir du flightID et de la classe.
 - **Module :** RSVF
 - **Sévérité :** Critical
 - **Priorité :** Highest
-- **Tests :** RSVF-PT-02, RSVF-PT-03
-- **Automatisé :** `test_rsvf_flight.py::test_rsvf_pt_02_flightid_falsifie`, `test_rsvf_pt_03_buy_direct` (`xfail`)
+- **Tests :** RSVF-PT-02
+- **Automatisé :** `test_rsvf_flight.py::test_rsvf_pt_02_flightid_falsifie` (`xfail`)
 
 **Étapes :**
 
@@ -325,8 +328,8 @@ panier/session et l'ordre des étapes.
 - **Module :** RSVA
 - **Sévérité :** Medium
 - **Priorité :** Medium
-- **Test :** RSVA-BT-02
-- **Automatisé :** `test_rsva_authentication.py::test_rsva_bt_02_mot_de_passe_1_caractere` (`xfail`)
+- **Test :** – (hors campagne réduite)
+- **Automatisé :** – (hors campagne réduite)
 
 **Étapes :**
 
@@ -400,7 +403,7 @@ mot de passe en clair.
 - **Module :** RSVF
 - **Sévérité :** High
 - **Priorité :** High
-- **Test :** RSVF-FT-03 (variante)
+- **Test :** – (hors campagne réduite)
 - **Automatisé :** scénario API
 
 **Étapes :**

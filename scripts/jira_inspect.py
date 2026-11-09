@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Compare les tests presents dans chaque projet Jira avec nos 36 tests.
+"""Compare les tests presents dans chaque projet Jira avec nos 9 tests.
 
 Usage :
     python scripts/jira_inspect.py

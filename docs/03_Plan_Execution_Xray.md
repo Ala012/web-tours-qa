@@ -2,7 +2,7 @@
 
 ## 1. Objectif
 
-Organiser, exécuter et tracer les 36 tests manuels dans Jira/Xray, puis produire
+Organiser, exécuter et tracer les 9 tests manuels dans Jira/Xray, puis produire
 un rapport d'exécution et les anomalies associées.
 
 ## 2. Préparation du projet Jira
@@ -52,20 +52,13 @@ Résultat attendu : 6 stories `WT-US-01` à `WT-US-06`.
 
 ```text
 WebTours
-├─ RSVA - Authentication
-│  ├─ FT - Functional Testing      (3 tests)
-│  ├─ ET - Error Testing           (3 tests)
-│  ├─ BT - Boundary Testing        (3 tests)
-│  └─ PT - Permission Testing      (3 tests)
+├─ RSVA - Authentification
+│  ├─ BT - Boundary Testing        (1 test)
+│  └─ PT - Permission Testing      (2 tests)
 ├─ RSVF - Flight
-│  ├─ FT - Functional Testing      (3 tests)
-│  ├─ ET - Error Testing           (3 tests)
-│  ├─ BT - Boundary Testing        (3 tests)
-│  └─ PT - Permission Testing      (3 tests)
+│  ├─ ET - Error Testing           (1 test)
+│  └─ PT - Permission Testing      (2 tests)
 └─ RSVI - Itinerary
-   ├─ FT - Functional Testing      (3 tests)
-   ├─ ET - Error Testing           (3 tests)
-   ├─ BT - Boundary Testing        (3 tests)
    └─ PT - Permission Testing      (3 tests)
 ```
 
@@ -74,17 +67,17 @@ WebTours
 
 ### 4.3 Vérification
 
-- 36 tickets de type **Test**.
+- 9 tickets de type **Test**.
 - Chaque test possède ses préconditions, étapes et résultats attendus.
 - Les labels contiennent `WebTours`, le module (`RSVA`/`RSVF`/`RSVI`), le type
-  (`FT`/`ET`/`BT`/`PT`) et l'identifiant du test.
+  (`ET`/`BT`/`PT`) et l'identifiant du test.
 
 ## 5. Création du Test Plan
 
 1. **Xray → Test Plans → Create**.
 2. Nom : **Plan de test WebTours – Sprint 1**.
 3. Description : campagne manuelle + automatique.
-4. Ajouter les 36 tests :
+4. Ajouter les 9 tests :
    - **Add Tests** → sélectionner le dossier `WebTours` ;
    - ou utiliser la recherche JQL : `project = WTQA AND issuetype = Test`.
 5. Enregistrer.
@@ -93,7 +86,7 @@ WebTours
 
 1. **Xray → Test Executions → Create**.
 2. Nom : **Exécution manuelle – Sprint 1**.
-3. Environnement : `Windows 10 – Chrome – WebTours local`.
+3. Environnement : `Windows11-Chrome-WebTours-local`.
 4. Ajouter les tests du Test Plan.
 5. Démarrer l'exécution.
 
@@ -117,8 +110,8 @@ Pour chaque test :
 
 | Statut | Nombre | Commentaire |
 |---|---|---|
-| PASS | 20 | Parcours nominaux et validations existantes |
-| FAIL | 16 | Anomalies BUG-01 à BUG-15 (certaines couvrent plusieurs tests) |
+| PASS | 0 | Aucun parcours nominal dans la campagne ciblée |
+| FAIL | 9 | Scénarios réels en échec (sécurité et crash) |
 | TODO | 0 | Tous exécutés |
 | BLOCKED | 0 | Aucun |
 
@@ -129,16 +122,17 @@ L'exécution a été créée et alimentée par API dans le projet **`WTQA` – W
 
 | Élément | Quantité | Clé(s) Jira |
 |---|---|---|
-| User stories | 6 | `WTQA-2` à `WTQA-7` |
-| Bugs | 15 | `WTQA-8` à `WTQA-22` |
-| Tests manuels | 36 | `WTQA-1`, `WTQA-23` à `WTQA-57` |
-| Test Plan | 1 | `WTQA-58` – 36 tests |
-| Test Execution | 1 | `WTQA-59` – 20 PASSED / 16 FAILED |
+| User stories | 6 | `WTQA-1` à `WTQA-6` |
+| Bugs | 15 | `WTQA-7` à `WTQA-21` |
+| Tests manuels | 9 | `WTQA-22` à `WTQA-30` |
+| Test Plan | 1 | `WTQA-31` – 9 tests |
+| Test Execution | 1 | `WTQA-32` – 9 FAILED |
 
 - Environnement d'exécution : `Windows11-Chrome-WebTours-local`.
-- Les statuts Xray sont **PASSED** (20) et **FAILED** (16).
-- Traçabilité : 16 liens **bug → test** et 48 liens **test → user story**.
-- Les 36 tests possèdent leurs étapes Xray (0 test sans étape).
+- Les 9 statuts Xray sont **FAILED**.
+- Traçabilité : 9 liens **bug → test** et 12 liens **test → user story**.
+- Les 9 tests possèdent leurs étapes Xray (0 test sans étape).
+- Arborescence Test Repository : `WebTours > module > type`.
 
 Vérification reproductible :
 
@@ -186,7 +180,7 @@ Xray génère automatiquement :
 Exporter le rapport en PDF/CSV et l'archiver dans le dépôt ou dans Jira.
 
 Un export local des statuts est disponible :
-`jira-xray/WebTours_Resultats_Execution.csv` (36 lignes, 20 PASS / 16 FAIL),
+`jira-xray/WebTours_Resultats_Execution.csv` (9 lignes, 0 PASS / 9 FAIL),
 régénérable avec `python scripts/export_results.py`.
 
 ### 9.1 JQL utiles
@@ -200,7 +194,7 @@ project = WTQA AND issuetype = Test AND "Test Status" = FAIL
 
 ## 10. Définition de terminé
 
-- [ ] 36 tests importés et rangés dans les bons dossiers.
+- [ ] 9 tests importés et rangés dans les bons dossiers.
 - [ ] Test Plan créé et complété.
 - [ ] Test Execution créé et exécuté à 100 %.
 - [ ] 15 bugs créés et liés aux tests.
