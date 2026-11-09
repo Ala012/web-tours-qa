@@ -1,0 +1,7 @@
+﻿"Issue Type","Summary","Description","Priority","Labels","Acceptance Criteria"
+"Story","WT-US-01 – Authentification","En tant que visiteur, je veux me connecter avec mes identifiants afin d'accéder à mes réservations.","High","WebTours WT-US-01","Connexion valide, message de bienvenue, menu utilisateur, déconnexion."
+"Story","WT-US-02 – Inscription","En tant que visiteur, je veux créer un compte afin de pouvoir réserver des vols.","High","WebTours WT-US-02","Création de compte, validation des champs, confirmation du mot de passe."
+"Story","WT-US-03 – Recherche et réservation de vols","En tant que client, je veux rechercher et réserver un vol afin de planifier mon voyage.","High","WebTours WT-US-03","Recherche aller simple/aller-retour, sélection, paiement, facture."
+"Story","WT-US-04 – Gestion de l'itinéraire","En tant que client, je veux consulter et supprimer mes réservations afin de gérer mon voyage.","High","WebTours WT-US-04","Affichage, suppression d'un vol, suppression de tous les vols."
+"Story","WT-US-05 – Déconnexion","En tant que client, je veux me déconnecter afin de protéger mes données.","Medium","WebTours WT-US-05","SignOff, retour au login, session invalidée."
+"Story","WT-US-06 – Sécurité et permissions","En tant qu'administrateur, je veux que les pages sensibles soient protégées afin d'éviter les accès non autorisés.","Critical","WebTours WT-US-06","Pas d'accès sans login, pas d'IDOR, pas de falsification de prix, admin protégé."

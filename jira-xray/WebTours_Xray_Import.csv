@@ -1,0 +1,260 @@
+﻿"Issue Type","Summary","Description","Test Type","Precondition","Steps","Expected Result","Priority","Labels","Folder"
+"Test","RSVA-FT-01 – Connexion avec des identifiants valides","Connexion avec des identifiants valides
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_ft_01_login_valide
+Statut constaté : Passé","Manual","Le serveur WebTours est démarré sur http://127.0.0.1:1080.
+Le compte de démonstration jojo / bean existe.","1. Ouvrir http://127.0.0.1:1080/WebTours/index.htm.
+2. Saisir jojo dans le champ Username et bean dans le champ Password.
+3. Cliquer sur le bouton Login.","1. La page Web Tours s'affiche avec le cadre de navigation et la page d'accueil.
+2. Les deux champs sont renseignés.
+3. Le message « Welcome, jojo » s'affiche et le menu Flights / Itinerary / Home / SignOff apparaît.","High","WebTours RSVA FT RSVA-FT-01 MANUAL-MANUAL","/WebTours/RSVA-Authentication/FT - Functional Testing"
+"Test","RSVA-FT-02 – Déconnexion de l'utilisateur (Sign Off)","Déconnexion de l'utilisateur (Sign Off)
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_ft_02_deconnexion
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.","1. Cliquer sur le bouton SignOff du menu de navigation.
+2. Vérifier la page d'accueil.","1. Le cadre de navigation revient au formulaire de connexion.
+2. Le message de bienvenue et les liens réservés aux utilisateurs connectés ne sont plus accessibles.","High","WebTours RSVA FT RSVA-FT-02 MANUAL-MANUAL","/WebTours/RSVA-Authentication/FT - Functional Testing"
+"Test","RSVA-FT-03 – Création d'un nouveau compte client (Sign Up)","Création d'un nouveau compte client (Sign Up)
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_ft_03_creation_compte
+Statut constaté : Passé","Manual","Le serveur WebTours est démarré.","1. Ouvrir la page d'accueil et cliquer sur le lien « sign up now ».
+2. Remplir le username, le password, la confirmation et les informations de profil.
+3. Cliquer sur le bouton Next (register).","1. Le formulaire Customer Profile s'affiche dans le cadre de droite.
+2. Les champs sont acceptés.
+3. Le message « Thank you, <username>, for registering » s'affiche et l'utilisateur est connecté.","High","WebTours RSVA FT RSVA-FT-03 MANUAL-MANUAL","/WebTours/RSVA-Authentication/FT - Functional Testing"
+"Test","RSVA-ET-01 – Connexion avec un mot de passe incorrect","Connexion avec un mot de passe incorrect
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_et_01_mot_de_passe_incorrect
+Statut constaté : Passé","Manual","Le compte jojo / bean existe.","1. Saisir jojo et un mot de passe erroné.
+2. Cliquer sur Login.","1. Les champs sont renseignés.
+2. La page « Web Tours Error - Incorrect Password » s'affiche et l'utilisateur n'est pas connecté.","High","WebTours RSVA ET RSVA-ET-01 MANUAL-MANUAL","/WebTours/RSVA-Authentication/ET - Error Testing"
+"Test","RSVA-ET-02 – Connexion avec des champs vides","Connexion avec des champs vides
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_et_02_champs_vides
+Statut constaté : Passé","Manual","Le formulaire de connexion est affiché.","1. Laisser les champs Username et Password vides.
+2. Cliquer sur Login.","1. Les champs sont vides.
+2. Un message d'erreur est affiché et la connexion est refusée.","Medium","WebTours RSVA ET RSVA-ET-02 MANUAL-MANUAL","/WebTours/RSVA-Authentication/ET - Error Testing"
+"Test","RSVA-ET-03 – Création de compte avec confirmation du mot de passe différente","Création de compte avec confirmation du mot de passe différente
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_et_03_confirmation_differente
+Statut constaté : Passé","Manual","Le formulaire Customer Profile est affiché.","1. Remplir le formulaire avec deux mots de passe différents.
+2. Cliquer sur register.","1. Les champs sont renseignés.
+2. Le message « Your password is invalid. Please re-enter it and it's confirmation. » s'affiche et aucun compte n'est créé.","Medium","WebTours RSVA ET RSVA-ET-03 MANUAL-MANUAL","/WebTours/RSVA-Authentication/ET - Error Testing"
+"Test","RSVA-BT-01 – Nom d'utilisateur à la limite haute de 14 caractères","Nom d'utilisateur à la limite haute de 14 caractères
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_bt_01_username_14_caracteres
+Statut constaté : Passé","Manual","Le formulaire Customer Profile est affiché.","1. Saisir un username alphanumérique de 14 caractères.
+2. Compléter le formulaire et cliquer sur register.","1. Le champ accepte les 14 caractères.
+2. Le compte est créé et le message de bienvenue s'affiche.","Medium","WebTours RSVA BT RSVA-BT-01 MANUAL-MANUAL","/WebTours/RSVA-Authentication/BT - Boundary Testing"
+"Test","RSVA-BT-02 – Mot de passe d'un seul caractère","Mot de passe d'un seul caractère
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_bt_02_mot_de_passe_1_caractere
+Statut constaté : Échoué – BUG-11","Manual","Le formulaire Customer Profile est affiché.","1. Saisir un mot de passe d'un seul caractère.
+2. Cliquer sur register.","1. Le champ accepte la saisie.
+2. Le système doit refuser un mot de passe trop faible (longueur minimale).","Medium","WebTours RSVA BT RSVA-BT-02 MANUAL-MANUAL","/WebTours/RSVA-Authentication/BT - Boundary Testing"
+"Test","RSVA-BT-03 – Connexion avec des caractères spéciaux dans le nom d'utilisateur","Connexion avec des caractères spéciaux dans le nom d'utilisateur
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_bt_03_username_caracteres_speciaux
+Statut constaté : Échoué – BUG-12","Manual","Le compte jojo / bean existe.","1. Saisir jojo! comme username et bean comme password.
+2. Cliquer sur Login.","1. Les champs sont renseignés.
+2. La connexion doit être refusée car le username saisi ne correspond pas exactement au compte jojo.","High","WebTours RSVA BT RSVA-BT-03 MANUAL-MANUAL","/WebTours/RSVA-Authentication/BT - Boundary Testing"
+"Test","RSVA-PT-01 – Accès direct à reservations.pl sans être connecté","Accès direct à reservations.pl sans être connecté
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_pt_01_reservations_sans_login
+Statut constaté : Échoué – BUG-01","Manual","Aucune session utilisateur n'est ouverte.","1. Ouvrir directement l'URL de recherche de vols sans passer par le login.
+2. Vérifier le contenu affiché.","1. L'application doit rediriger vers la page de connexion.
+2. Aucun formulaire de réservation ne doit être accessible sans authentification.","Critical","WebTours RSVA PT RSVA-PT-01 MANUAL-MANUAL","/WebTours/RSVA-Authentication/PT - Permission Testing"
+"Test","RSVA-PT-02 – Accès direct à itinerary.pl sans être connecté","Accès direct à itinerary.pl sans être connecté
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_pt_02_itinerary_sans_login
+Statut constaté : Échoué – BUG-02","Manual","Aucune session utilisateur n'est ouverte.","1. Ouvrir directement l'URL de l'itinéraire.
+2. Vérifier le contenu affiché.","1. L'application doit rediriger vers la page de connexion.
+2. Aucune donnée d'itinéraire ne doit être accessible.","High","WebTours RSVA PT RSVA-PT-02 MANUAL-MANUAL","/WebTours/RSVA-Authentication/PT - Permission Testing"
+"Test","RSVA-PT-03 – Accès à la page d'administration sans authentification","Accès à la page d'administration sans authentification
+
+User Story : WT-US-01 / WT-US-02
+Test automatisé : test_rsva_authentication.py::test_rsva_pt_03_admin_sans_login
+Statut constaté : Échoué – BUG-03","Manual","Aucune session administrateur n'est ouverte.","1. Ouvrir directement l'URL admin.pl.
+2. Vérifier les options serveur affichées.","1. L'accès doit être refusé (401/403) ou rediriger vers le login.
+2. Aucune option de configuration ne doit être modifiable sans authentification.","Critical","WebTours RSVA PT RSVA-PT-03 MANUAL-MANUAL","/WebTours/RSVA-Authentication/PT - Permission Testing"
+"Test","RSVF-FT-01 – Recherche d'un vol aller simple Denver → Paris","Recherche d'un vol aller simple Denver → Paris
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_ft_01_recherche_aller_simple
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.
+La date de départ est fixée à demain.","1. Cliquer sur Flights dans le menu.
+2. Sélectionner Denver, Paris, la date de demain et 1 passager.
+3. Cliquer sur le bouton Next (findFlights).","1. Le formulaire Find Flight s'affiche.
+2. Les valeurs sont sélectionnées.
+3. Quatre vols (040, 041, 042, 043) sont proposés avec les horaires et les prix.","High","WebTours RSVF FT RSVF-FT-01 MANUAL-MANUAL","/WebTours/RSVF-Flight/FT - Functional Testing"
+"Test","RSVF-FT-02 – Recherche d'un vol aller-retour","Recherche d'un vol aller-retour
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_ft_02_recherche_aller_retour
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.","1. Ouvrir le formulaire Find Flight.
+2. Cocher Roundtrip ticket et lancer la recherche.","1. Le formulaire s'affiche.
+2. Les vols aller et les vols retour sont affichés.","High","WebTours RSVF FT RSVF-FT-02 MANUAL-MANUAL","/WebTours/RSVF-Flight/FT - Functional Testing"
+"Test","RSVF-FT-03 – Réservation et paiement d'un vol","Réservation et paiement d'un vol
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_ft_03_reservation_paiement
+Statut constaté : Passé","Manual","L'utilisateur jojo est connecté.
+Un vol Denver → Paris est recherché.","1. Sélectionner le premier vol et cliquer sur Next (reserveFlights).
+2. Remplir les informations de paiement et cliquer sur Next (buyFlights).","1. La page Payment Details s'affiche avec le total.
+2. La page « Reservation Made! Invoice » s'affiche avec le total facturé.","High","WebTours RSVF FT RSVF-FT-03 MANUAL-MANUAL","/WebTours/RSVF-Flight/FT - Functional Testing"
+"Test","RSVF-ET-01 – Recherche avec une date de départ vide","Recherche avec une date de départ vide
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_et_01_date_vide
+Statut constaté : Échoué – BUG-05","Manual","L'utilisateur jojo est connecté.
+Le formulaire Find Flight est affiché.","1. Vider le champ Departure Date.
+2. Cliquer sur Next (findFlights).","1. Le champ est vide.
+2. Un message de validation doit s'afficher et le formulaire doit rester utilisable.","High","WebTours RSVF ET RSVF-ET-01 MANUAL-MANUAL","/WebTours/RSVF-Flight/ET - Error Testing"
+"Test","RSVF-ET-02 – Recherche avec une date invalide (13/45/2026)","Recherche avec une date invalide (13/45/2026)
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_et_02_date_invalide
+Statut constaté : Échoué – BUG-05","Manual","Le formulaire Find Flight est affiché.","1. Saisir 13/45/2026 dans Departure Date.
+2. Cliquer sur Next (findFlights).","1. La valeur est saisie.
+2. Un message d'erreur explicite doit être affiché.","High","WebTours RSVF ET RSVF-ET-02 MANUAL-MANUAL","/WebTours/RSVF-Flight/ET - Error Testing"
+"Test","RSVF-ET-03 – Recherche avec la ville de départ identique à la ville d'arrivée","Recherche avec la ville de départ identique à la ville d'arrivée
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_et_03_meme_ville
+Statut constaté : Échoué – BUG-07","Manual","Le formulaire Find Flight est affiché.","1. Sélectionner Denver pour le départ et Denver pour l'arrivée.
+2. Cliquer sur Next (findFlights).","1. Les deux listes affichent Denver.
+2. La recherche doit être refusée avec un message explicite.","Medium","WebTours RSVF ET RSVF-ET-03 MANUAL-MANUAL","/WebTours/RSVF-Flight/ET - Error Testing"
+"Test","RSVF-BT-01 – Recherche avec le nombre minimum de passagers (1)","Recherche avec le nombre minimum de passagers (1)
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_bt_01_un_passager
+Statut constaté : Passé","Manual","Le formulaire Find Flight est affiché.","1. Saisir 1 passager et lancer la recherche.","1. Quatre vols sont affichés et le total correspond à 1 billet.","Medium","WebTours RSVF BT RSVF-BT-01 MANUAL-MANUAL","/WebTours/RSVF-Flight/BT - Boundary Testing"
+"Test","RSVF-BT-02 – Recherche avec zéro passager","Recherche avec zéro passager
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_bt_02_zero_passager
+Statut constaté : Échoué – BUG-08","Manual","Le formulaire Find Flight est affiché.","1. Saisir 0 dans No. of Passengers.
+2. Cliquer sur Next (findFlights).","1. La valeur 0 est saisie.
+2. La recherche doit être refusée : le nombre de passagers doit être supérieur ou égal à 1.","High","WebTours RSVF BT RSVF-BT-02 MANUAL-MANUAL","/WebTours/RSVF-Flight/BT - Boundary Testing"
+"Test","RSVF-BT-03 – Recherche avec un nombre de passagers très élevé (999)","Recherche avec un nombre de passagers très élevé (999)
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_bt_03_999_passagers
+Statut constaté : Échoué – BUG-08","Manual","Le formulaire Find Flight est affiché.","1. Saisir 999 passagers.
+2. Cliquer sur Next (findFlights).","1. La valeur est saisie.
+2. La recherche doit être refusée au-delà du maximum autorisé.","Medium","WebTours RSVF BT RSVF-BT-03 MANUAL-MANUAL","/WebTours/RSVF-Flight/BT - Boundary Testing"
+"Test","RSVF-PT-01 – Manipulation du prix dans la requête POST","Manipulation du prix dans la requête POST
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_pt_01_prix_modifie_post
+Statut constaté : Échoué – BUG-09","Manual","L'utilisateur est connecté.
+Un vol Denver → Paris est recherché.","1. Intercepter la requête POST reserveFlights.
+2. Remplacer 350 par 1 dans le champ outboundFlight et soumettre.
+3. Finaliser le paiement.","1. La requête contient le prix du vol.
+2. Le serveur doit recalculer le prix ou refuser la requête.
+3. Le montant facturé doit être le prix réel du vol (350 $).","Critical","WebTours RSVF PT RSVF-PT-01 MANUAL-MANUAL","/WebTours/RSVF-Flight/PT - Permission Testing"
+"Test","RSVF-PT-02 – Falsification de l'identifiant de vol (flightID)","Falsification de l'identifiant de vol (flightID)
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_pt_02_flightid_falsifie
+Statut constaté : Échoué – BUG-10","Manual","L'utilisateur est connecté.","1. Soumettre directement une réservation avec un numéro de vol inexistant (999).
+2. Finaliser le paiement.","1. Le serveur doit refuser un vol qui n'existe pas.
+2. Aucune facture ne doit être générée pour un vol inexistant.","Critical","WebTours RSVF PT RSVF-PT-02 MANUAL-MANUAL","/WebTours/RSVF-Flight/PT - Permission Testing"
+"Test","RSVF-PT-03 – Accès direct à buyFlights sans sélection de vol","Accès direct à buyFlights sans sélection de vol
+
+User Story : WT-US-03
+Test automatisé : test_rsvf_flight.py::test_rsvf_pt_03_buy_direct
+Statut constaté : Échoué – BUG-10","Manual","L'utilisateur est connecté.","1. Envoyer directement une requête POST buyFlights sans passer par la recherche ni la sélection.
+2. Vérifier l'itinéraire.","1. Le serveur doit refuser la requête.
+2. Aucune réservation ne doit être enregistrée.","Critical","WebTours RSVF PT RSVF-PT-03 MANUAL-MANUAL","/WebTours/RSVF-Flight/PT - Permission Testing"
+"Test","RSVI-FT-01 – Affichage de l'itinéraire après une réservation","Affichage de l'itinéraire après une réservation
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_ft_01_affichage_apres_reservation
+Statut constaté : Passé","Manual","L'utilisateur est connecté.
+Au moins un vol a été réservé.","1. Cliquer sur Itinerary dans le menu.
+2. Vérifier les informations du vol.","1. La page Itinerary s'affiche.
+2. Le vol, la date, le prix et les 4 derniers chiffres de la carte sont affichés.","High","WebTours RSVI FT RSVI-FT-01 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/FT - Functional Testing"
+"Test","RSVI-FT-02 – Suppression d'un vol de l'itinéraire","Suppression d'un vol de l'itinéraire
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_ft_02_suppression_un_vol
+Statut constaté : Passé","Manual","L'utilisateur possède au moins deux réservations.","1. Ouvrir l'itinéraire.
+2. Cocher le premier vol et cliquer sur Cancel Reservation.","1. Les vols réservés sont listés.
+2. Le vol est supprimé et les autres vols restent affichés.","High","WebTours RSVI FT RSVI-FT-02 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/FT - Functional Testing"
+"Test","RSVI-FT-03 – Suppression de tous les vols de l'itinéraire","Suppression de tous les vols de l'itinéraire
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_ft_03_suppression_tous_vols
+Statut constaté : Passé","Manual","L'utilisateur possède au moins une réservation.","1. Ouvrir l'itinéraire.
+2. Cliquer sur Cancel All Reservations.","1. Les vols réservés sont listés.
+2. Tous les vols sont supprimés et le message « No flights have been reserved » s'affiche.","High","WebTours RSVI FT RSVI-FT-03 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/FT - Functional Testing"
+"Test","RSVI-ET-01 – Suppression avec un identifiant de vol invalide","Suppression avec un identifiant de vol invalide
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_et_01_id_vol_invalide
+Statut constaté : Passé","Manual","L'utilisateur possède une réservation.","1. Envoyer une requête de suppression avec un flightID falsifié.
+2. Vérifier l'itinéraire.","1. Le serveur doit refuser la suppression.
+2. Le vol d'origine doit être conservé et un message d'erreur affiché.","High","WebTours RSVI ET RSVI-ET-01 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/ET - Error Testing"
+"Test","RSVI-ET-02 – Affichage de l'itinéraire sans aucune réservation","Affichage de l'itinéraire sans aucune réservation
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_et_02_sans_reservation
+Statut constaté : Passé","Manual","L'utilisateur est connecté avec un compte sans réservation.","1. Cliquer sur Itinerary.","1. Le message « No flights have been reserved » s'affiche sans erreur.","Medium","WebTours RSVI ET RSVI-ET-02 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/ET - Error Testing"
+"Test","RSVI-ET-03 – Double suppression de tous les vols","Double suppression de tous les vols
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_et_03_double_suppression
+Statut constaté : Passé","Manual","L'utilisateur possède une réservation.","1. Cliquer une première fois sur Cancel All Reservations.
+2. Cliquer une seconde fois sur Cancel All Reservations.","1. L'itinéraire est vidé.
+2. Le système reste stable et affiche un itinéraire vide.","Low","WebTours RSVI ET RSVI-ET-03 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/ET - Error Testing"
+"Test","RSVI-BT-01 – Itinéraire avec un seul passager","Itinéraire avec un seul passager
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_bt_01_un_passager
+Statut constaté : Passé","Manual","L'utilisateur est connecté.","1. Réserver un vol pour 1 passager.
+2. Ouvrir l'itinéraire.","1. La réservation est enregistrée.
+2. Un seul billet est affiché et le total correspond à 1 passager.","Medium","WebTours RSVI BT RSVI-BT-01 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/BT - Boundary Testing"
+"Test","RSVI-BT-02 – Itinéraire avec huit passagers (limite de l'interface)","Itinéraire avec huit passagers (limite de l'interface)
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_bt_02_8_passagers
+Statut constaté : Passé","Manual","L'utilisateur est connecté.","1. Réserver un vol pour 8 passagers.
+2. Ouvrir l'itinéraire.","1. Huit champs de nom de passager sont affichés.
+2. Le total est multiplié par 8 et les 8 passagers sont enregistrés.","Medium","WebTours RSVI BT RSVI-BT-02 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/BT - Boundary Testing"
+"Test","RSVI-BT-03 – Suppression du dernier vol de l'itinéraire","Suppression du dernier vol de l'itinéraire
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_bt_03_dernier_vol
+Statut constaté : Passé","Manual","L'utilisateur possède exactement une réservation.","1. Ouvrir l'itinéraire.
+2. Cocher le vol et cliquer sur Cancel Reservation.","1. Un vol est affiché.
+2. L'itinéraire devient vide sans erreur.","Medium","WebTours RSVI BT RSVI-BT-03 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/BT - Boundary Testing"
+"Test","RSVI-PT-01 – Accès à l'itinéraire d'un autre utilisateur (cookie forgé)","Accès à l'itinéraire d'un autre utilisateur (cookie forgé)
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_pt_01_idor
+Statut constaté : Échoué – BUG-04","Manual","Aucune authentification.
+Le compte admin existe.","1. Envoyer une requête GET /cgi-bin/itinerary.pl avec le cookie MTUserInfo forgé pour admin.
+2. Lire la réponse.","1. Le serveur doit refuser l'accès ou retourner uniquement les données de la session authentifiée.
+2. Aucune donnée d'un autre utilisateur ne doit être exposée.","Critical","WebTours RSVI PT RSVI-PT-01 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/PT - Permission Testing"
+"Test","RSVI-PT-02 – Accès direct à itinerary.pl sans session","Accès direct à itinerary.pl sans session
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_pt_02_acces_sans_session
+Statut constaté : Échoué – BUG-02","Manual","Aucune session utilisateur.","1. Ouvrir directement l'URL de l'itinéraire.","1. L'application doit rediriger vers le login.","High","WebTours RSVI PT RSVI-PT-02 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/PT - Permission Testing"
+"Test","RSVI-PT-03 – Suppression de vols sans session authentifiée","Suppression de vols sans session authentifiée
+
+User Story : WT-US-04
+Test automatisé : test_rsvi_itinerary.py::test_rsvi_pt_03_suppression_sans_session
+Statut constaté : Échoué – BUG-02","Manual","Aucune session utilisateur.","1. Envoyer directement une requête POST de suppression sans cookie de session.","1. Le serveur doit refuser la requête (401/403).","High","WebTours RSVI PT RSVI-PT-03 MANUAL-MANUAL","/WebTours/RSVI-Itinerary/PT - Permission Testing"

@@ -1,0 +1,96 @@
+// ============================================================================
+//  Jenkinsfile - Mini-Projet QA Web Tours
+//  Pipeline declaratif pour un agent Jenkins Windows.
+//
+//  Prerequis sur l'agent :
+//    - Java 8 (serveur WebTours) + Strawberry Perl
+//    - Python 3.10+ dans le PATH
+//    - Google Chrome (Selenium Manager telecharge le driver)
+//    - WebTours installe dans D:\web tours\WebTours
+//    - Plugins : HTML Publisher, JUnit
+// ============================================================================
+pipeline {
+    agent { label 'windows' }
+
+    options {
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
+        timeout(time: 45, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+
+    environment {
+        WEBTOURS_HOME = 'D:\\web tours\\WebTours'
+        WEBTOURS_URL  = 'http://127.0.0.1:1080'
+        PYTHONUTF8    = '1'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                bat 'python --version && git --version'
+            }
+        }
+
+        stage('Installation des dependances') {
+            steps {
+                dir('automation') {
+                    bat 'python -m pip install --upgrade pip'
+                    bat 'python -m pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Demarrage de WebTours') {
+            steps {
+                bat 'scripts\\start_webtours.bat'
+            }
+        }
+
+        stage('Tests Selenium + pytest') {
+            steps {
+                // On garde le build stable si des tests echouent :
+                // les rapports HTML/JUnit restent publies et analysables.
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    dir('automation') {
+                        bat 'python -m pytest'
+                    }
+                }
+            }
+        }
+
+        stage('Publication des rapports') {
+            steps {
+                junit allowEmptyResults: true, testResults: 'automation/reports/junit.xml'
+                publishHTML(target: [
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'automation/reports',
+                    reportFiles          : 'report.html',
+                    reportName           : 'Rapport WebTours'
+                ])
+            }
+        }
+    }
+
+    post {
+        always {
+            bat 'scripts\\stop_webtours.bat'
+            archiveArtifacts artifacts: 'automation/reports/**', allowEmptyArchive: true, fingerprint: true
+        }
+        success {
+            echo 'Suite WebTours terminee avec succes (les xfail correspondent aux bugs connus).'
+        }
+        unstable {
+            echo 'Des tests ont echoue : consulter le rapport HTML et les anomalies documentees.'
+        }
+        failure {
+            echo 'Le pipeline a echoue avant ou pendant l execution des tests.'
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}
