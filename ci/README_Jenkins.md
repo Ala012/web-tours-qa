@@ -69,8 +69,15 @@ Checkout
 - Résultats JUnit : **Test Result** du build.
 - Artefacts archivés : `automation/reports/**`.
 
-Résultat attendu : **14 tests collectés, 5 passed / 9 xfailed**
-(JUnit : `total=14, pass=5, skip=9, fail=0`).
+Résultat obtenu :
+
+| Build | Environnement | Résultat |
+|---|---|---|
+| Local #1 | WAR + agent Windows | **SUCCESS** — 5 passed / 9 xfailed |
+| Docker #2 | conteneur Linux | **SUCCESS** — 5 passed / 9 xfailed (222,56 s) |
+| Docker #3 | conteneur Linux, après rotation admin | **SUCCESS** — 5 passed / 9 xfailed (223,46 s) |
+
+JUnit : `pass=5, skip=9, fail=0`.
 
 Les tests marqués `xfail` correspondent aux **bugs connus et documentés**.
 Ils sont comptés comme `xfailed` et ne rendent pas le build instable.

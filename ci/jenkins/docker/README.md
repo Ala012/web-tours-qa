@@ -17,7 +17,10 @@ Le script :
    (fichier ignoré par git) ;
 2. démarre WebTours sur l'hôte s'il est arrêté ;
 3. construit l'image `webtours-jenkins:lts` et démarre le conteneur ;
-4. attend Jenkins puis affiche l'URL et les identifiants.
+   si le mot de passe de `.env` a changé, supprime le compte admin existant
+   et recrée le conteneur pour appliquer la rotation ;
+4. attend Jenkins puis affiche l'URL et l'utilisateur (le mot de passe reste
+   dans `.env`, il n'est jamais affiché).
 
 | Élément | Valeur |
 |---|---|
@@ -51,7 +54,8 @@ docker logs -f webtours-jenkins
 docker compose -f ci\jenkins\docker\docker-compose.yml ps
 
 # Build manuel
-$pw = ((Get-Content ci\jenkins\docker\.env) -replace '^JENKINS_ADMIN_PASSWORD=', '')
+$pw = (Select-String -Path ci\jenkins\docker\.env -Pattern '^JENKINS_ADMIN_PASSWORD=').Line `
+    -replace '^JENKINS_ADMIN_PASSWORD=', ''
 curl.exe -u "admin:$pw" -X POST "http://127.0.0.1:8080/job/WebTours-QA/build"
 
 # Rapports
@@ -64,17 +68,37 @@ powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\stop.ps1
 powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\stop.ps1 -RemoveVolume
 ```
 
-## 4. Résultat attendu
+## 4. Résultat des builds Docker
+
+| Build | Contexte | Résultat |
+|---|---|---|
+| #2 | premier build Docker valide | **SUCCESS** — 5 passed / 9 xfailed (222,56 s) |
+| #3 | après rotation du mot de passe admin | **SUCCESS** — 5 passed / 9 xfailed (223,46 s) |
 
 ```text
 collected 14 items
-5 passed, 9 xfailed
-JUnit : total=14, pass=5, skip=9, fail=0
+5 passed, 9 xfailed in 223.46s (0:03:43)
+JUnit : pass=5, skip=9, fail=0
 ```
 
 Les 9 `xfail` correspondent aux bugs documentés : le build reste **SUCCESS**.
 
-## 5. Remarques
+> Le build #1 a échoué car `ci/Jenkinsfile.docker` n'était pas encore poussé
+> sur GitHub.
+
+## 5. Rotation du mot de passe admin
+
+Le mot de passe est transmis au conteneur à sa **création**. Pour le changer :
+
+1. écrire le nouveau secret dans `ci/jenkins/docker/.env` ;
+2. relancer `start.ps1`.
+
+Le script détecte l'écart avec l'environnement du conteneur, supprime
+`/var/jenkins_home/users/admin_*` dans le volume puis recrée le conteneur :
+`init.groovy.d/01-admin.groovy` régénère le compte `admin` avec le nouveau
+mot de passe. Les builds et la configuration du job sont conservés.
+
+## 6. Remarques
 
 - WebTours doit être démarré sur l'hôte avant un build (le pipeline le
   vérifie et échoue proprement sinon).

@@ -37,14 +37,38 @@ if (-not $webToursUp) {
     & "$repoRoot\scripts\start_webtours.bat"
 }
 
-# 3. Construction + demarrage du conteneur.
+# 3. Rotation du compte admin si le mot de passe de .env a change.
+#    Le conteneur garde en memoire le mot de passe de sa creation : on supprime
+#    le compte (users/admin_<hash>) puis on recree le conteneur pour que
+#    init.groovy.d/01-admin.groovy le recree avec le nouveau secret.
+$containerName = "webtours-jenkins"
+$rotate = $false
+$containerExists = (docker ps -a --format "{{.Names}}") -match "^$containerName$"
+if ($containerExists) {
+    $envLine = docker inspect $containerName --format '{{range .Config.Env}}{{println .}}{{end}}' |
+        Select-String '^JENKINS_ADMIN_PASSWORD='
+    if ($envLine) {
+        $containerPassword = $envLine.Line -replace '^JENKINS_ADMIN_PASSWORD=', ''
+        if ($containerPassword -ne $password) {
+            Write-Host "Mot de passe admin modifie : rotation du compte..."
+            $volume = (docker inspect $containerName --format '{{json .Mounts}}' |
+                ConvertFrom-Json |
+                Where-Object { $_.Destination -eq '/var/jenkins_home' }).Name
+            docker stop $containerName | Out-Null
+            docker run --rm -v "${volume}:/var/jenkins_home" alpine `
+                sh -c "rm -rf /var/jenkins_home/users/admin_*" | Out-Null
+            $rotate = $true
+        }
+    }
+}
+
+# 4. Construction + demarrage du conteneur.
 Push-Location $composeDir
 try {
-    if ($NoBuild) {
-        docker compose up -d
-    } else {
-        docker compose up -d --build
-    }
+    $composeArgs = @("compose", "up", "-d")
+    if ($rotate) { $composeArgs += "--force-recreate" }
+    if (-not $NoBuild) { $composeArgs += "--build" }
+    & docker @composeArgs
     if ($LASTEXITCODE -ne 0) {
         throw "docker compose a echoue (code $LASTEXITCODE)"
     }
@@ -69,5 +93,5 @@ if ($ready) {
     Write-Host "Jenkins met encore du temps a demarrer : docker logs -f webtours-jenkins"
 }
 Write-Host "Utilisateur : admin"
-Write-Host "Mot de passe : $password  (fichier $envFile)"
+Write-Host "Mot de passe : voir $envFile (non affiche)"
 Write-Host "Job : WebTours-QA (build manuel ou polling SCM toutes les ~5 min)"

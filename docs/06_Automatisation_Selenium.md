@@ -242,19 +242,38 @@ Le `Jenkinsfile.docker` suit les mêmes étapes, mais :
 - exécute Python et Chrome dans le conteneur ;
 - ne possède pas d'étape d'arrêt de WebTours.
 
-### 8.5 Résultat du build
+### 8.5 Résultat des builds
 
-**Build #1 : SUCCESS** (déclenché manuellement).
+**Build local #1 : SUCCESS** (WAR + agent Windows) :
 
 ```text
 collected 14 items
 5 passed, 9 xfailed
-JUnit : total=14, pass=5, skip=9, fail=0
+JUnit : pass=5, skip=9, fail=0
+```
+
+**Build Docker #2 : SUCCESS** (Jenkins + Python + Chrome dans le conteneur,
+WebTours sur l'hôte) :
+
+```text
+collected 14 items
+5 passed, 9 xfailed in 222.56s (0:03:42)
+JUnit : pass=5, skip=9, fail=0
+```
+
+**Build Docker #3 : SUCCESS** (après rotation du mot de passe admin) :
+
+```text
+collected 14 items
+5 passed, 9 xfailed in 223.46s (0:03:43)
+JUnit : pass=5, skip=9, fail=0
 ```
 
 - Rapport HTML : <http://127.0.0.1:8080/job/WebTours-QA/lastBuild/Rapport_20WebTours/>
 - Résultats JUnit : page **Test Result** du build.
 
+> Le build Docker #1 a échoué car `ci/Jenkinsfile.docker` n'était pas encore
+> poussé sur GitHub ; le build #2 est le premier build Docker valide.
 > Le pipeline étant sur `127.0.0.1`, le webhook GitHub → Jenkins n'est pas
 > disponible. Le job Docker active un **polling SCM** toutes les ~5 minutes ;
 > un build peut aussi être déclenché manuellement.
