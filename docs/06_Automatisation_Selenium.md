@@ -180,9 +180,31 @@ Variables d'environnement :
 Le projet est publié sur GitHub :
 <https://github.com/Ala012/web-tours-qa> (branche `main`).
 
-### 8.2 Installation locale (réalisée)
+### 8.2 Docker (recommandé)
 
-Jenkins est lancé **sans installation** (WAR + JDK 21 local) :
+Jenkins, Python et Google Chrome tournent dans un conteneur Linux ;
+WebTours reste sur l'hôte Windows (`host.docker.internal:1080`).
+
+```powershell
+cd "D:\web tours\Mini-Projet"
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\start.ps1
+```
+
+| Élément | Valeur |
+|---|---|
+| URL | <http://127.0.0.1:8080> |
+| Utilisateur | `admin` |
+| Mot de passe | `ci/jenkins/docker/.env` (généré, hors dépôt) |
+| Image | `webtours-jenkins:lts` (Jenkins LTS + Python + Chrome) |
+| Job | `WebTours-QA` |
+| Script Path | `ci/Jenkinsfile.docker` |
+| Déclencheur | polling SCM `H/5 * * * *` + build manuel |
+
+Le job et le compte admin sont créés au démarrage par
+`ci/jenkins/docker/init.groovy.d/` ; la configuration du job est dans
+`ci/jenkins/docker/jobs/WebTours-QA.xml`.
+
+### 8.3 Installation locale (alternative, WAR + JDK 21)
 
 ```powershell
 cd "D:\web tours\Mini-Projet"
@@ -191,31 +213,18 @@ powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1
 
 | Élément | Valeur |
 |---|---|
-| URL | <http://127.0.0.1:8080> |
-| Utilisateur | `admin` |
 | Mot de passe | `D:\web tours\jenkins\admin-password.txt` (hors dépôt) |
 | Jenkins | LTS (WAR), Java 21 (Temurin) |
 | Job | `WebTours-QA` |
-| Definition | Pipeline script from SCM |
-| SCM | `https://github.com/Ala012/web-tours-qa.git` |
-| Branche | `*/main` |
 | Script Path | `ci/Jenkinsfile` |
 | Label de l'agent | `windows` |
 
 Plugins installés : **workflow-aggregator**, **git**, **junit**,
 **htmlpublisher**, **timestamper**, **ws-cleanup**.
 
-Le job est défini dans `ci/jenkins/WebTours-QA.config.xml` et peut être recréé
-par CLI :
+### 8.4 Pipeline
 
-```powershell
-java -jar jenkins-cli.jar -s http://127.0.0.1:8080/ -auth "admin:<motdepasse>" `
-  create-job WebTours-QA < ci\jenkins\WebTours-QA.config.xml
-```
-
-### 8.3 Pipeline
-
-Le `Jenkinsfile` :
+Le `Jenkinsfile` (local) :
 
 1. vérifie l'environnement Python ;
 2. installe les dépendances ;
@@ -227,7 +236,13 @@ Le `Jenkinsfile` :
 8. archive `automation/reports/**` ;
 9. arrête WebTours dans `post { always { ... } }`.
 
-### 8.4 Résultat du build
+Le `Jenkinsfile.docker` suit les mêmes étapes, mais :
+
+- vérifie WebTours via `host.docker.internal:1080` (sans le démarrer) ;
+- exécute Python et Chrome dans le conteneur ;
+- ne possède pas d'étape d'arrêt de WebTours.
+
+### 8.5 Résultat du build
 
 **Build #1 : SUCCESS** (déclenché manuellement).
 
@@ -241,9 +256,10 @@ JUnit : total=14, pass=5, skip=9, fail=0
 - Résultats JUnit : page **Test Result** du build.
 
 > Le pipeline étant sur `127.0.0.1`, le webhook GitHub → Jenkins n'est pas
-> disponible. Les builds sont déclenchés manuellement (interface ou CLI).
+> disponible. Le job Docker active un **polling SCM** toutes les ~5 minutes ;
+> un build peut aussi être déclenché manuellement.
 
-### 8.5 Exécution locale du pipeline
+### 8.6 Exécution locale du pipeline
 
 ```bat
 cd /d "D:\web tours\Mini-Projet"

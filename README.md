@@ -81,13 +81,22 @@ Mini-Projet/
 │  ├─ jira_reduce_tests.py       # diagnostic/suppression des tests Xray
 │  └─ jira_show_issue.py         # affiche un ticket + étapes Xray
 └─ ci/
-   ├─ Jenkinsfile
+   ├─ Jenkinsfile              # pipeline Windows (local)
+   ├─ Jenkinsfile.docker       # pipeline Docker (Linux)
    ├─ README_Jenkins.md
-   └─ jenkins/                 # Jenkins local (WAR, JDK 21, job, init)
-      ├─ run-jenkins.ps1
+   └─ jenkins/
+      ├─ README.md             # les deux méthodes
+      ├─ run-jenkins.ps1       # local (WAR + JDK 21)
       ├─ WebTours-QA.config.xml
       ├─ init.groovy.d/01-admin.groovy
-      └─ README.md
+      └─ docker/               # Jenkins + Python + Chrome en conteneur
+         ├─ Dockerfile
+         ├─ docker-compose.yml
+         ├─ plugins.txt
+         ├─ start.ps1
+         ├─ stop.ps1
+         ├─ init.groovy.d/
+         └─ jobs/WebTours-QA.xml
 ```
 
 ---
@@ -102,6 +111,7 @@ Mini-Projet/
 | Python | 3.10+ (testé avec 3.12) |
 | Navigateur | Google Chrome ou Microsoft Edge |
 | Selenium | 4.x (Selenium Manager télécharge le driver automatiquement) |
+| Docker Desktop | optionnel, pour Jenkins en conteneur (mode Linux) |
 | Jenkins | optionnel, pour la CI |
 
 > Le serveur WebTours doit être lancé **avant** les tests.
@@ -214,27 +224,40 @@ Voir `docs/06_Automatisation_Selenium.md`.
 
 ## 6. Jenkins
 
-Le fichier `ci/Jenkinsfile` :
-
-1. installe les dépendances Python ;
-2. démarre WebTours ;
-3. lance `pytest` ;
-4. publie le rapport HTML et archive les résultats ;
-5. arrête le serveur.
-
 Le dépôt GitHub est : <https://github.com/Ala012/web-tours-qa>
 
-Jenkins peut être lancé en local sur Windows (sans installation) :
+### 6.1 Docker (recommandé)
+
+Jenkins, Python et Google Chrome tournent dans un conteneur Linux ;
+WebTours reste sur l'hôte Windows (`host.docker.internal:1080`).
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\start.ps1
+```
+
+- URL : <http://127.0.0.1:8080>
+- Utilisateur : `admin` (mot de passe dans `ci/jenkins/docker/.env`)
+- Job : **WebTours-QA** (`ci/Jenkinsfile.docker`, branche `main`)
+- Arrêt : `ci\jenkins\docker\stop.ps1` (ajouter `-RemoveVolume` pour un reset)
+
+### 6.2 Local (WAR + JDK 21)
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1
 ```
 
-- URL : <http://127.0.0.1:8080>
-- Utilisateur : `admin` (mot de passe dans `D:\web tours\jenkins\admin-password.txt`)
-- Job : **WebTours-QA** (Pipeline from SCM, `ci/Jenkinsfile`, branche `main`)
+- Job : **WebTours-QA** (`ci/Jenkinsfile`, branche `main`)
+- Mot de passe : `D:\web tours\jenkins\admin-password.txt`
 
-Voir `ci/jenkins/README.md`, `ci/README_Jenkins.md` et la section Jenkins de
+Le pipeline :
+
+1. vérifie / démarre WebTours ;
+2. installe les dépendances Python ;
+3. lance `pytest` ;
+4. publie le rapport HTML et archive les résultats.
+
+Voir `ci/jenkins/docker/README.md`, `ci/jenkins/README.md`,
+`ci/README_Jenkins.md` et la section Jenkins de
 `docs/06_Automatisation_Selenium.md`.
 
 ---

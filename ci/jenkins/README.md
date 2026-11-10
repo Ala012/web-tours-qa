@@ -1,26 +1,59 @@
-# Jenkins local – WebTours QA
+# Jenkins – WebTours QA
 
-Ce dossier permet de lancer **Jenkins sur Windows sans installation** (WAR +
-JDK 21) et de créer automatiquement le job **WebTours-QA**.
+Deux méthodes sont disponibles :
 
-## 1. Démarrage
+| Méthode | Jenkins | Tests | WebTours |
+|---|---|---|---|
+| **Docker (recommandé)** | conteneur Linux | conteneur (Python + Chrome) | hôte Windows |
+| Local (WAR) | Windows | hôte Windows | hôte Windows |
+
+## 1. Docker (recommandé)
+
+```powershell
+cd "D:\web tours\Mini-Projet"
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\start.ps1
+```
+
+Le script génère `ci/jenkins/docker/.env` (mot de passe admin, ignoré par git),
+démarre WebTours si besoin, construit l'image et lance le conteneur.
+
+| Élément | Valeur |
+|---|---|
+| URL | <http://127.0.0.1:8080> |
+| Utilisateur | `admin` |
+| Mot de passe | `ci/jenkins/docker/.env` |
+| Conteneur | `webtours-jenkins` |
+| Job | `WebTours-QA` |
+| Script Path | `ci/Jenkinsfile.docker` |
+| Déclencheur | polling SCM `H/5 * * * *` + build manuel |
+
+Détails, commandes et dépannage : [`docker/README.md`](docker/README.md).
+
+```powershell
+# Logs / état
+docker logs -f webtours-jenkins
+docker compose -f ci\jenkins\docker\docker-compose.yml ps
+
+# Arrêt (volume conservé) / reset complet
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\stop.ps1
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\stop.ps1 -RemoveVolume
+```
+
+## 2. Local (WAR + JDK 21)
 
 ```powershell
 cd "D:\web tours\Mini-Projet"
 powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1
 ```
 
-Le script :
+Le script télécharge `jenkins.war` dans `D:\web tours\jenkins`, génère le mot de
+passe admin dans `D:\web tours\jenkins\admin-password.txt` et démarre Jenkins
+sur <http://127.0.0.1:8080>.
 
-1. télécharge `jenkins.war` (LTS) dans `D:\web tours\jenkins` s'il est absent ;
-2. génère le mot de passe admin dans `D:\web tours\jenkins\admin-password.txt` ;
-3. démarre Jenkins sur <http://127.0.0.1:8080> avec l'utilisateur `admin`.
-
-> Jenkins LTS récent exige **Java 21+**. Le script utilise le JDK 21 présent
-> dans `D:\web tours\jenkins\jdk21` (ou `JAVA_HOME` s'il pointe déjà vers 21).
+> Jenkins LTS récent exige **Java 21+** ; le script utilise le JDK 21 local.
 > Java 17 reste utilisé par WebTours.
 
-## 2. Job Pipeline
+### 2.1 Job Pipeline (local)
 
 Le job **WebTours-QA** se crée depuis `WebTours-QA.config.xml` :
 
@@ -40,18 +73,22 @@ Configuration :
 | Repository | `https://github.com/Ala012/web-tours-qa.git` |
 | Branche | `*/main` |
 | Script Path | `ci/Jenkinsfile` |
+| Label de l'agent | `windows` |
 
-## 3. Plugins requis
+### 2.2 Plugins requis
 
 ```text
 workflow-aggregator, git, junit, htmlpublisher, timestamper, ws-cleanup
 ```
 
-Ils s'installent via **Manage Jenkins → Plugins** ou par l'API/CLI.
-
-## 4. Lancer un build
+## 3. Lancer un build
 
 ```powershell
+# Docker
+$pw = ((Get-Content ci\jenkins\docker\.env) -replace '^JENKINS_ADMIN_PASSWORD=', '')
+curl.exe -u "admin:$pw" -X POST "http://127.0.0.1:8080/job/WebTours-QA/build"
+
+# Local
 $pw = Get-Content "D:\web tours\jenkins\admin-password.txt" -Raw
 curl.exe -u "admin:$pw" -X POST "http://127.0.0.1:8080/job/WebTours-QA/build"
 ```
@@ -62,12 +99,14 @@ Résultats :
 - résultats JUnit : page **Test Result** du build
 - artefacts : `automation/reports/**`
 
-## 5. Remarques
+## 4. Remarques
 
-- Le pipeline démarre puis **arrête** WebTours (`scripts/start_webtours.bat` /
-  `scripts/stop_webtours.bat`). Relancer le serveur après le build si besoin.
-- Les données Jenkins (`D:\web tours\jenkins`) sont **hors du dépôt** : aucun
-  secret n'est versionné.
-- Le pipeline est vert tant que les 9 `xfail` restent des échecs connus ; un
+- En Docker, le pipeline **ne démarre/arrête pas** WebTours : il vérifie qu'il
+  répond sur `host.docker.internal:1080`. Le script `start.ps1` le démarre.
+- En local, le pipeline démarre puis arrête WebTours ; relancer le serveur
+  après le build si besoin.
+- Aucun secret n'est versionné : `.env` et `D:\web tours\jenkins` restent
+  hors du dépôt.
+- Le build est vert tant que les 9 `xfail` restent des échecs connus ; un
   `XPASS` signifie qu'un bug est corrigé (mettre à jour Xray et retirer le
   `xfail`).

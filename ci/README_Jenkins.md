@@ -1,28 +1,45 @@
 # CI Jenkins – Mini-Projet QA Web Tours
 
-Ce dossier contient le pipeline `Jenkinsfile` qui exécute la suite
-d'automatisation Selenium/pytest et publie les rapports.
+Deux pipelines sont disponibles :
+
+| Fichier | Environnement | WebTours |
+|---|---|---|
+| `ci/Jenkinsfile` | agent Jenkins Windows (local) | hôte Windows |
+| `ci/Jenkinsfile.docker` | conteneur Jenkins Linux | hôte Windows via `host.docker.internal:1080` |
 
 - Dépôt GitHub : <https://github.com/Ala012/web-tours-qa>
-- Jenkins local (WAR + JDK 21, job `WebTours-QA`) : voir
-  [`jenkins/README.md`](jenkins/README.md)
+- Jenkins dans Docker (recommandé) : [`jenkins/docker/README.md`](jenkins/docker/README.md)
+- Jenkins local (WAR + JDK 21) : [`jenkins/README.md`](jenkins/README.md)
 
-## 1. Prérequis sur l'agent Jenkins
+## 1. Jenkins dans Docker (recommandé)
 
-| Élément | Détail |
+```powershell
+cd "D:\web tours\Mini-Projet"
+powershell -ExecutionPolicy Bypass -File ci\jenkins\docker\start.ps1
+```
+
+| Élément | Valeur |
 |---|---|
-| OS | Windows (agent avec le label `windows`) |
-| Java | Java 21+ pour Jenkins ; Java 8 pour le serveur WebTours |
-| Perl | Strawberry Perl 5.10.1.0 |
-| Python | 3.10+ dans le `PATH` |
-| Navigateur | Google Chrome (Selenium Manager gère le driver) |
-| WebTours | installé dans `D:\web tours\WebTours` |
-| Plugins Jenkins | **Pipeline**, **Git**, **HTML Publisher**, **JUnit**, **Timestamper** |
+| URL | <http://127.0.0.1:8080> |
+| Utilisateur | `admin` |
+| Mot de passe | `ci/jenkins/docker/.env` (généré, ignoré par git) |
+| Job | `WebTours-QA` |
+| Script Path | `ci/Jenkinsfile.docker` |
+| Image | `webtours-jenkins:lts` (Jenkins LTS + Python + Chrome) |
+| Déclencheur | polling SCM `H/5 * * * *` + build manuel |
 
-## 2. Création du job
+L'image contient Jenkins, Python 3, Google Chrome et les plugins
+(`workflow-aggregator`, `git`, `junit`, `htmlpublisher`, `timestamper`,
+`ws-cleanup`). Le compte admin et le job sont créés au démarrage par
+`ci/jenkins/docker/init.groovy.d/`.
 
-1. Jenkins → **New Item** → **Pipeline** → nom : `WebTours-QA`.
-2. Section **Pipeline** :
+## 2. Jenkins local (agent Windows)
+
+Prérequis : Windows, Java 21+ pour Jenkins, Java 8 + Strawberry Perl pour
+WebTours, Python 3.10+, Google Chrome.
+
+1. Lancer `powershell -ExecutionPolicy Bypass -File ci\jenkins\run-jenkins.ps1`.
+2. Créer le job **Pipeline** `WebTours-QA` :
    - **Definition** : `Pipeline script from SCM`
    - **SCM** : `Git`
    - **Repository URL** : `https://github.com/Ala012/web-tours-qa.git`
@@ -30,19 +47,21 @@ d'automatisation Selenium/pytest et publie les rapports.
    - **Script Path** : `ci/Jenkinsfile`
 3. Enregistrer puis **Build Now**.
 
-> Le job peut aussi être créé directement depuis
-> `ci/jenkins/WebTours-QA.config.xml` (voir `ci/jenkins/README.md`).
-
 ## 3. Ce que fait le pipeline
 
 ```text
 Checkout
-  └─ Installation des dependances (pip install -r requirements.txt)
-       └─ Demarrage de WebTours (scripts/start_webtours.bat)
+  └─ Verification de WebTours
+       └─ Installation des dependances (pip install -r requirements.txt)
             └─ Tests Selenium + pytest (python -m pytest)
                  └─ Publication des rapports (JUnit + HTML)
-                      └─ Arret de WebTours (post / always)
+                      └─ Archivage des artefacts
 ```
+
+- Pipeline Docker : vérifie `host.docker.internal:1080`, ne démarre/arrête pas
+  WebTours.
+- Pipeline local : démarre WebTours (`scripts/start_webtours.bat`) et l'arrête
+  dans `post { always { ... } }`.
 
 ## 4. Résultats
 
@@ -50,7 +69,7 @@ Checkout
 - Résultats JUnit : **Test Result** du build.
 - Artefacts archivés : `automation/reports/**`.
 
-**Build #1 : SUCCESS** — 14 tests collectés, **5 passed / 9 xfailed**
+Résultat attendu : **14 tests collectés, 5 passed / 9 xfailed**
 (JUnit : `total=14, pass=5, skip=9, fail=0`).
 
 Les tests marqués `xfail` correspondent aux **bugs connus et documentés**.
@@ -75,3 +94,5 @@ scripts\stop_webtours.bat
 | `No module named pytest` | dépendances non installées | `python -m pip install -r automation/requirements.txt` |
 | `session not created` | Chrome absent ou trop ancien | Installer/mettre à jour Chrome |
 | Rapport HTML vide | plugin HTML Publisher manquant | Installer le plugin puis relancer |
+| Docker : `host.docker.internal` injoignable | WebTours arrêté ou pare-feu | Démarrer WebTours ; vérifier `extra_hosts` |
+| Docker : port 8080 occupé | Jenkins local déjà lancé | Arrêter le WAR local ou changer le port |

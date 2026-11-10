@@ -1,0 +1,94 @@
+// ============================================================================
+//  Jenkinsfile.docker - Mini-Projet QA Web Tours
+//  Variante pour Jenkins execute dans un conteneur Linux.
+//
+//  - Jenkins, Python et Google Chrome tournent dans le conteneur.
+//  - WebTours reste sur l'hote Windows, expose via host.docker.internal:1080.
+//  - Le pipeline ne demarre/arrete pas WebTours : le serveur doit tourner.
+// ============================================================================
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
+        timeout(time: 45, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+
+    environment {
+        WEBTOURS_URL = 'http://host.docker.internal:1080'
+        PYTHONUTF8   = '1'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'python --version && git --version && google-chrome --version'
+            }
+        }
+
+        stage('Verification WebTours') {
+            steps {
+                // WebTours doit etre demarre sur l'hote Windows.
+                sh '''
+                    curl -fsS --retry 15 --retry-delay 2 --retry-connrefused \
+                        "$WEBTOURS_URL/WebTours/index.htm" -o /dev/null
+                '''
+            }
+        }
+
+        stage('Installation des dependances') {
+            steps {
+                dir('automation') {
+                    sh 'python -m pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Tests Selenium + pytest') {
+            steps {
+                // On garde le build stable si des tests echouent :
+                // les rapports HTML/JUnit restent publies et analysables.
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    dir('automation') {
+                        sh 'python -m pytest'
+                    }
+                }
+            }
+        }
+
+        stage('Publication des rapports') {
+            steps {
+                junit allowEmptyResults: true, testResults: 'automation/reports/junit.xml'
+                publishHTML(target: [
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'automation/reports',
+                    reportFiles          : 'report.html',
+                    reportName           : 'Rapport WebTours'
+                ])
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'automation/reports/**', allowEmptyArchive: true, fingerprint: true
+        }
+        success {
+            echo 'Suite WebTours terminee avec succes (les xfail correspondent aux bugs connus).'
+        }
+        unstable {
+            echo 'Des tests ont echoue : consulter le rapport HTML et les anomalies documentees.'
+        }
+        failure {
+            echo 'Le pipeline a echoue avant ou pendant l execution des tests.'
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}

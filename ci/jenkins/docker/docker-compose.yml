@@ -1,0 +1,23 @@
+services:
+  jenkins:
+    build:
+      context: ../../..
+      dockerfile: ci/jenkins/docker/Dockerfile
+    image: webtours-jenkins:lts
+    container_name: webtours-jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:?Definir JENKINS_ADMIN_PASSWORD dans ci/jenkins/docker/.env}
+      JENKINS_EXTERNAL_URL: http://localhost:8080/
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./init.groovy.d:/var/jenkins_home/init.groovy.d:ro
+      - ./jobs/WebTours-QA.xml:/opt/jenkins-config/WebTours-QA.xml:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  jenkins_home:

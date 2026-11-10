@@ -1,0 +1,10 @@
+# Contexte de build Docker (image Jenkins)
+.git
+.gitignore
+**/__pycache__
+**/.pytest_cache
+automation/reports
+*.log
+.env
+.env.*
+ci/jenkins/docker/.env
